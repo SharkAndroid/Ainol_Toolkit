@@ -42,6 +42,7 @@ public class ACTMain extends Activity {
     private ToggleButton cpuboost;
     private ToggleButton gpuboost;
     private ToggleButton freezes;
+    private TextView freezes_text;
     
     public static class HelpFragment extends DialogFragment {
         @Override
@@ -61,6 +62,7 @@ public class ACTMain extends Activity {
         cpuboost = (ToggleButton) findViewById(R.id.cpuboost_btn);
 		gpuboost = (ToggleButton) findViewById(R.id.gpuboost_btn);
         freezes = (ToggleButton) findViewById(R.id.freezes_btn);
+		freezes_text = (TextView) findViewById(R.id.freezes);
 		
         SharedPreferences sharedPrefs = getSharedPreferences(SETTINGS_KEY, MODE_PRIVATE);
         cpuboost.setChecked(sharedPrefs.getBoolean("cpuboost_state", false));
@@ -88,6 +90,7 @@ public class ACTMain extends Activity {
         
         String sharkandroid = getProp("ro.sa.version");
         if(sharkandroid == null) {
+		    freezes_text.setVisibility(View.GONE);
         	freezes.setVisibility(View.GONE);
         }
         
