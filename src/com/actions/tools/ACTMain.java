@@ -219,7 +219,7 @@ public class ACTMain extends Activity {
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
                 intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                intent.setData(Uri.parse("http://github.com/SharkAndroid/update_manager/Actions_Tools/raw/master/Actions_Tools.apk"));
+                intent.setData(Uri.parse("http://github.com/SharkAndroid/update_manager/blob/master/Actions_Tools/Actions_Tools.apk?raw=true"));
                 startActivity(intent);
                 return true;
             case R.id.source_code:
