@@ -18,6 +18,7 @@ package com.actions.tools;
 
 import android.content.Context;
 import android.util.Log;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -29,35 +30,35 @@ public class SensorControl {
   public final String CALIB_RESET_ATTR = "calibration_reset";
   public final String CALIB_RUN_ATTR = "calibration_run";
   public final String CALIB_VAL_ATTR = "calibration_value";
-  private final String SAVE_DIR = "/data/data/com.actions.tools/files/";
+  private final String INPUT_DIR = "/sys/class/input";
   private final String GSENSORS = "mma8452,mc3210";
   private String classPath = null;
   private String dataPath = null;
 
   public SensorControl(Context paramContext) {
-    this.dataPath = paramContext.getFilesDir().getAbsolutePath();
+    dataPath = paramContext.getFilesDir().getAbsolutePath();
   }
 
   private String getClassPath() {
     File[] arrayOfFile = null;
-    if (this.classPath == null)
-    arrayOfFile = new File(SAVE_DIR).listFiles();
+    if (classPath == null)
+    arrayOfFile = new File(INPUT_DIR).listFiles();
     for (int i = 0; ; i++)
     if (i < arrayOfFile.length) {
       if ((arrayOfFile[i].isDirectory()) && (arrayOfFile[i].getName().contains("input"))) {
         String str = readFile(arrayOfFile[i].getAbsolutePath() + "/name");
         if ((str != null) && (GSENSORS.contains(str.trim()))) {
-          this.classPath = arrayOfFile[i].getAbsolutePath();
-          Log.i(TAG, "classPath: " + this.classPath);
+          classPath = arrayOfFile[i].getAbsolutePath();
+          Log.i(TAG, "classPath: " + classPath);
         }
       }
     }
     else
-    return this.classPath;
+    return classPath;
   }
 
   private String getDataPath(String paramString) {
-    return this.dataPath + "/" + paramString;
+    return dataPath + "/" + paramString;
   }
 
   private String getDevPath(String paramString) {

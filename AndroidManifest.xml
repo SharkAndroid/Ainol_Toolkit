@@ -16,14 +16,15 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.actions.tools"
-    android:versionCode="20141213"
+    android:versionCode="20141216"
     android:versionName="@string/app_version" >
     
     <uses-sdk
-        android:minSdkVersion="16" />
+        android:minSdkVersion="16"
+        android:targetSdkVersion="19" />
 
     <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     
     <application
         android:allowBackup="true"
@@ -39,8 +40,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity> 
-        
-        <activity android:name=".SensorActivity" />
-        
+		
+		<activity android:name=".SensorActivity" />
     </application>
+
 </manifest>

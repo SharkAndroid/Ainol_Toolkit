@@ -37,6 +37,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actions.tools.SensorControl;
+import com.actions.tools.SensorHost;
+
 import com.actions.tools.R;
 
 public class SensorActivity extends Activity implements SensorEventListener {
@@ -93,66 +96,76 @@ public class SensorActivity extends Activity implements SensorEventListener {
     };
 
     private void findViews() {
-        this.mViewText = ((TextView)findViewById(R.id.view_text));
-        this.mRunCalib = ((Button)findViewById(R.id.run_button));
-        this.mResetCalib = ((Button)findViewById(R.id.reset_button));
-        this.mSensorHost = ((SensorHost)findViewById(R.id.sensor_host));
+        mViewText = ((TextView) findViewById(R.id.view_text));
+        mRunCalib = ((Button) findViewById(R.id.run_button));
+        mResetCalib = ((Button) findViewById(R.id.reset_button));
+        mSensorHost = ((SensorHost) findViewById(R.id.sensor_host));
     }
 
 	protected static void CalibAccess(SensorActivity sensorActivity, boolean b) {
+		// Auto generate method
 	}
 
 	private void setListensers() {
-        this.mRunCalib.setOnClickListener(this.mRunCalibListener);
-        this.mResetCalib.setOnClickListener(this.mResetCalibListener);
+        mRunCalib.setOnClickListener(mRunCalibListener);
+        mResetCalib.setOnClickListener(mResetCalibListener);
     }
 
     public void onAccuracyChanged(Sensor paramSensor, int paramInt) {
+    	// Auto generate method
     }
 
-    public void onCreate(Bundle paramBundle) {
+    @Override
+    protected void onCreate(Bundle paramBundle) {
         super.onCreate(paramBundle);
         setContentView(R.layout.sensor_calib);
+        
         findViews();
-        this.mHandler = new Handler();
-        this.sm = ((SensorManager)getSystemService("sensor"));
-        this.sc = new SensorControl(this);
+        mHandler = new Handler();
+        sm = ((SensorManager)getSystemService("sensor"));
+        sc = new SensorControl(this);
         setListensers();
     }
 
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-        this.mHandler = null;
-        this.sm = null;
-        this.sc = null;
+        
+        mHandler = null;
+        sm = null;
+        sc = null;
     }
 
+    @Override
     protected void onPause() {
         super.onPause();
-        this.sm.unregisterListener(this);
+        
+        sm.unregisterListener(this);
     }
 
+    @Override
     protected void onResume() {
         super.onResume();
-        this.sm.registerListener(this, this.sm.getDefaultSensor(1), 3);
+        
+        sm.registerListener(this, sm.getDefaultSensor(1), 3);
     }
 
     public void onSensorChanged(SensorEvent paramSensorEvent) {
-        if ((paramSensorEvent == null) || (paramSensorEvent.values.length != 3) || (this.mCalibMode));
+        if ((paramSensorEvent == null) || (paramSensorEvent.values.length != 3) || (mCalibMode));
         do {
-            if (this.mViewText != null) {
+            if (mViewText != null) {
                 Object[] arrayOfObject = new Object[3];
                 arrayOfObject[0] = Float.valueOf(paramSensorEvent.values[0]);
                 arrayOfObject[1] = Float.valueOf(paramSensorEvent.values[1]);
                 arrayOfObject[2] = Float.valueOf(paramSensorEvent.values[2]);
                 String str = String.format("X: %.3f, Y: %.3f, Z: %.3f", arrayOfObject);
-                this.mViewText.setText(str);
-                this.mViewText.setTextColor(getResources().getColor(R.color.purple));
+                mViewText.setText(str);
+                mViewText.setTextColor(getResources().getColor(R.color.purple));
             }
         }
 
-        while (this.mSensorHost == null);
-        this.mSensorHost.onSensorChanged(paramSensorEvent);
+        while (mSensorHost == null);
+        mSensorHost.onSensorChanged(paramSensorEvent);
     }
     
     @Override
