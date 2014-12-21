@@ -43,6 +43,9 @@ public class ACTMain extends Activity {
     private ToggleButton gpuboost;
     private ToggleButton freezes;
     private TextView freezes_text;
+    boolean cpuboost_state;
+    boolean gpuboost_state;
+    boolean freezes_state;
     
     public static class HelpFragment extends DialogFragment {
         @Override
@@ -88,7 +91,7 @@ public class ACTMain extends Activity {
             });
         }
         
-        String sharkandroid = getProp("ro.sa.version");
+        String sharkandroid = getProp("ro.sa.versionid");
         if(sharkandroid == null) {
 		    freezes_text.setVisibility(View.GONE);
         	freezes.setVisibility(View.GONE);
@@ -110,19 +113,18 @@ public class ACTMain extends Activity {
                     ExecuteRoot("chmod 755 /sys/devices/system/cpu/cpufreq/user/boost");
                     Toast.makeText(ACTMain.this, getString(R.string.cpuboost_unlocked), Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "Warning: Maximum CPU freq unlocked!");
-                    SharedPreferences.Editor editor = getSharedPreferences(SETTINGS_KEY, MODE_PRIVATE).edit();
-                    editor.putBoolean("cpuboost_state", true);
-                    editor.commit();
+                    cpuboost_state = true;
                 } else {
                 	ExecuteRoot("chmod 666 /sys/devices/system/cpu/cpufreq/user/boost");
                     ExecuteRoot("echo '0'>/sys/devices/system/cpu/cpufreq/user/boost");
                     ExecuteRoot("chmod 777 /sys/devices/system/cpu/cpufreq/user/boost");
                     Toast.makeText(ACTMain.this, getString(R.string.cpuboost_locked), Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "Warning: Maximum CPU freq locked!");
-                    SharedPreferences.Editor editor = getSharedPreferences(SETTINGS_KEY, MODE_PRIVATE).edit();
-                    editor.putBoolean("cpuboost_state", false);
-                    editor.commit();
+                    cpuboost_state = false;
                 }
+                SharedPreferences.Editor editor = getSharedPreferences(SETTINGS_KEY, MODE_PRIVATE).edit();
+                editor.putBoolean("cpuboost_state", cpuboost_state);
+                editor.commit();
             }
         });
 		
@@ -134,19 +136,18 @@ public class ACTMain extends Activity {
 	                ExecuteRoot("chmod 755 /sys/devices/system/cpu/cpufreq/user/boost");
 	                Toast.makeText(ACTMain.this, getString(R.string.gpuboost_unlocked), Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "Warning: Maximum GPU freq unlocked!");
-                    SharedPreferences.Editor editor = getSharedPreferences(SETTINGS_KEY, MODE_PRIVATE).edit();
-                    editor.putBoolean("gpuboost_state", true);
-                    editor.commit();
+                    gpuboost_state = true;
                 } else {
                 	ExecuteRoot("chmod 666 /sys/devices/system/cpu/cpufreq/gpufreq/policy");
 	                ExecuteRoot("echo '0'>/sys/devices/system/cpu/cpufreq/gpufreq/policy");
 	                ExecuteRoot("chmod 777 /sys/devices/system/cpu/cpufreq/gpufreq/policy");
 	                Toast.makeText(ACTMain.this, getString(R.string.gpuboost_locked), Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "Warning: Maximum GPU freq locked!");
-                    SharedPreferences.Editor editor = getSharedPreferences(SETTINGS_KEY, MODE_PRIVATE).edit();
-                    editor.putBoolean("gpuboost_state", false);
-                    editor.commit();
+                    gpuboost_state = false;
                 }
+                SharedPreferences.Editor editor = getSharedPreferences(SETTINGS_KEY, MODE_PRIVATE).edit();
+                editor.putBoolean("gpuboost_state", gpuboost_state);
+                editor.commit();
             }
         }); 
         
@@ -158,19 +159,18 @@ public class ACTMain extends Activity {
 	                ExecuteRoot("chmod 755 /sys/devices/system/cpu/cpufreq/interactive/boost");
 	                Toast.makeText(ACTMain.this, getString(R.string.function_enabled), Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "Warning: Freeze function enabled!");
-                    SharedPreferences.Editor editor = getSharedPreferences(SETTINGS_KEY, MODE_PRIVATE).edit();
-                    editor.putBoolean("freezes_state", true);
-                    editor.commit();
+                    freezes_state = true;
                 } else {
                 	ExecuteRoot("chmod 666 /sys/devices/system/cpu/cpufreq/interactive/boost");
 	                ExecuteRoot("echo '0'>/sys/devices/system/cpu/cpufreq/interactive/boost");
 	                ExecuteRoot("chmod 777 /sys/devices/system/cpu/cpufreq/interactive/boost");
 	                Toast.makeText(ACTMain.this, getString(R.string.function_disabled), Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "Warning: Freeze function disabled!");
-                    SharedPreferences.Editor editor = getSharedPreferences(SETTINGS_KEY, MODE_PRIVATE).edit();
-                    editor.putBoolean("freezes_state", false);
-                    editor.commit();
+                    freezes_state = false;
                 }
+                SharedPreferences.Editor editor = getSharedPreferences(SETTINGS_KEY, MODE_PRIVATE).edit();
+                editor.putBoolean("freezes_state", freezes_state);
+                editor.commit();
             }
         }); 
 	}
