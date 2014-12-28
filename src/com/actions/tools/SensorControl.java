@@ -25,21 +25,21 @@ import java.io.FileOutputStream;
 
 public class SensorControl {
 	
-  public final String TAG = "SensorControl";
-  private final String CALIB_FILE = "gsensor_calib.txt";
-  public final String CALIB_RESET_ATTR = "calibration_reset";
-  public final String CALIB_RUN_ATTR = "calibration_run";
-  public final String CALIB_VAL_ATTR = "calibration_value";
-  private final String INPUT_DIR = "/sys/class/input";
-  private final String GSENSORS = "mma8452,mc3210";
-  private String classPath = null;
-  private String dataPath = null;
+  public static final String TAG = "SensorControl";
+  public static final String CALIB_FILE = "gsensor_calib.txt";
+  public static final String CALIB_RESET_ATTR = "calibration_reset";
+  public static final String CALIB_RUN_ATTR = "calibration_run";
+  public static final String CALIB_VAL_ATTR = "calibration_value";
+  public static final String INPUT_DIR = "/sys/class/input";
+  public static final String GSENSORS = "mma8452,mc3210";
+  public String classPath = null;
+  public String dataPath = null;
 
   public SensorControl(Context paramContext) {
     dataPath = paramContext.getFilesDir().getAbsolutePath();
   }
 
-  private String getClassPath() {
+  public String getClassPath() {
     File[] arrayOfFile = null;
     if (classPath == null)
     arrayOfFile = new File(INPUT_DIR).listFiles();
@@ -49,7 +49,7 @@ public class SensorControl {
         String str = readFile(arrayOfFile[i].getAbsolutePath() + "/name");
         if ((str != null) && (GSENSORS.contains(str.trim()))) {
           classPath = arrayOfFile[i].getAbsolutePath();
-          Log.i(TAG, "classPath: " + classPath);
+          Log.d(TAG, "classPath: " + classPath);
         }
       }
     }
@@ -57,15 +57,15 @@ public class SensorControl {
     return classPath;
   }
 
-  private String getDataPath(String paramString) {
+  public String getDataPath(String paramString) {
     return dataPath + "/" + paramString;
   }
 
-  private String getDevPath(String paramString) {
+  public String getDevPath(String paramString) {
     return getClassPath() + "/" + paramString;
   }
 
-  private String readFile(String paramString) {
+  public String readFile(String paramString) {
     byte[] arrayOfByte = null;
     try {
       FileInputStream localFileInputStream = new FileInputStream(paramString);
@@ -76,13 +76,13 @@ public class SensorControl {
     }
     catch (Exception localException) {
       while (true) {
-        Log.e(TAG, "read " + paramString + " error!");
+        Log.d(TAG, "read " + paramString + " error!");
         localException.printStackTrace();
       }
     }
   }
 
-  private void writeFile(String paramString1, String paramString2) {
+  public void writeFile(String paramString1, String paramString2) {
     try {
       FileOutputStream localFileOutputStream = new FileOutputStream(paramString1);
       localFileOutputStream.write(paramString2.getBytes());
@@ -90,7 +90,7 @@ public class SensorControl {
       return;
     }
     catch (Exception localException) {
-      Log.e(TAG, "write " + paramString1 + " error!");
+      Log.d(TAG, "write " + paramString1 + " error!");
       localException.printStackTrace();
     }
   }

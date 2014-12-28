@@ -44,7 +44,7 @@ import com.actions.tools.R;
 
 public class SensorActivity extends Activity implements SensorEventListener {
 	
-    private final String TAG = "SensorActivity";
+	public static final String TAG = "SensorActivity";
     private Button mRunCalib;
     private Button mResetCalib;
     private boolean mCalibMode = false;
@@ -57,18 +57,16 @@ public class SensorActivity extends Activity implements SensorEventListener {
     private View.OnClickListener mRunCalibListener = new View.OnClickListener() {
         public void onClick(View paramAnonymousView) {
             SensorActivity.this.mRunCalib.setClickable(false);
-            SensorActivity.CalibAccess(SensorActivity.this, true);
             SensorActivity.this.sc.resetCalib();
             SensorActivity.this.mHandler.postDelayed(new Runnable() {
                 public void run() {
                     SensorActivity.this.mRunCalib.setClickable(true);
-                    SensorActivity.CalibAccess(SensorActivity.this, false);
                     SensorActivity.this.sc.runCalib();
                     String str1 = SensorActivity.this.sc.getCalibValue();
-                    Log.i(TAG, "Calib: " + str1);
+                    Log.d(TAG, "Calib: " + str1);
                     String str2 = str1 + "\n";
                     SensorActivity.this.sc.writeCalibFile(str2);
-                    Toast.makeText(SensorActivity.this, R.string.info_calib, 1).show();
+                    Toast.makeText(SensorActivity.this, getString(R.string.calib_run), Toast.LENGTH_SHORT).show();
                 }
             }
             , 1000L);
@@ -78,17 +76,15 @@ public class SensorActivity extends Activity implements SensorEventListener {
     private View.OnClickListener mResetCalibListener = new View.OnClickListener() {
         public void onClick(View paramAnonymousView) {
             SensorActivity.this.mResetCalib.setClickable(false);
-            SensorActivity.CalibAccess(SensorActivity.this, true);
             SensorActivity.this.sc.resetCalib();
             SensorActivity.this.mHandler.postDelayed(new Runnable() {
                 public void run() {
                     SensorActivity.this.mResetCalib.setClickable(true);
-                    SensorActivity.CalibAccess(SensorActivity.this, false);
                     String str1 = SensorActivity.this.sc.getCalibValue();
-                    Log.i(TAG, "Calib: " + str1);
+                    Log.d(TAG, "Calib: " + str1);
                     String str2 = str1 + "\n";
                     SensorActivity.this.sc.writeCalibFile(str2);
-                    Toast.makeText(SensorActivity.this, R.string.info_reset, 1).show();
+                    Toast.makeText(SensorActivity.this, getString(R.string.calib_reset), Toast.LENGTH_SHORT).show();
                 }
             }
             , 1000L);
@@ -96,15 +92,11 @@ public class SensorActivity extends Activity implements SensorEventListener {
     };
 
     private void findViews() {
-        mViewText = ((TextView) findViewById(R.id.view_text));
-        mRunCalib = ((Button) findViewById(R.id.run_button));
-        mResetCalib = ((Button) findViewById(R.id.reset_button));
-        mSensorHost = ((SensorHost) findViewById(R.id.sensor_host));
+        mViewText = (TextView) findViewById(R.id.view_text);
+        mRunCalib = (Button) findViewById(R.id.run_button);
+        mResetCalib = (Button) findViewById(R.id.reset_button);
+        mSensorHost = (SensorHost) findViewById(R.id.sensor_host);
     }
-
-	protected static void CalibAccess(SensorActivity sensorActivity, boolean b) {
-		// Auto generate method
-	}
 
 	private void setListensers() {
         mRunCalib.setOnClickListener(mRunCalibListener);
@@ -119,10 +111,9 @@ public class SensorActivity extends Activity implements SensorEventListener {
     protected void onCreate(Bundle paramBundle) {
         super.onCreate(paramBundle);
         setContentView(R.layout.sensor_calib);
-        
         findViews();
         mHandler = new Handler();
-        sm = ((SensorManager)getSystemService("sensor"));
+        sm = (SensorManager) getSystemService("sensor");
         sc = new SensorControl(this);
         setListensers();
     }

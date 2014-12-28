@@ -21,14 +21,14 @@
 	android:background="#c0c0c0">
 
     <TextView
-	    android:id="@+id/tips_info" 	
+	    android:id="@+id/tips" 	
 	    android:textSize="20.0sp" 
 	    android:layout_width="fill_parent" 
 	    android:layout_height="wrap_content" 
 	    android:layout_marginLeft="10.0sp" 
 		android:layout_marginTop="10.0sp" 
 	    android:layout_marginBottom="10.0sp" 
-	    android:text="@string/info_tips"
+	    android:text="@string/tips"
         android:textColor="#4b0082"	/>
 	
     <TextView 

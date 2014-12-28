@@ -17,7 +17,7 @@
 <resources>
     <string name="app_name">Actions Tools</string>
     <string name="app_copyright">Copyright © 2014 SharkAndroid</string>
-    <string name="app_version">v1.7-open_beta_test</string>
+    <string name="app_version">v1.8-open_beta_test</string>
     <string name="settings">SETTING</string>
     <string name="ok">OK</string>
     <string name="exit">Exit</string>
@@ -29,13 +29,13 @@
     <string name="on">ON</string>
     <string name="off">OFF</string>
     <string name="source_code">Source Code</string>
-    <string name="unsupport_device">This program only for devices that have "Actions ATM702X" processor.</string>
+    <string name="unsupport_device">This program only for devices that have Actions ATM7029 processor.</string>
     <string name="sensor_calib_title">Sensor Calibration</string>
     <string name="run_button">Run calibration</string>
     <string name="reset_button">Clear data</string>
-    <string name="info_reset">Calibration data cleared.</string>
-    <string name="info_calib">Calibration data saved.</string>
-    <string name="info_tips">Please put device on a level surface and stand still.</string>
+    <string name="calib_reset">Calibration data cleared</string>
+    <string name="calib_run">Calibration data saved</string>
+    <string name="tips">Please put device on a level surface and stand still</string>
     <string name="cpuboost_unlocked">CPU Freq Unlocked</string>
     <string name="cpuboost_locked">CPU Freq Locked</string>
     <string name="gpuboost_unlocked">GPU Freq Unlocked</string>
@@ -46,6 +46,12 @@
     <string name="back_actmain">Main Screen</string>
     <string name="changelog_title">Changelog</string>
     <string name="changelog_text">
+<b>Version 1.8-open_beta_test</b>
+\n\n
+* Some fixes for Gravity Sensor Calibration.
+\n
+* Some fixes in code and in translation.
+\n\n
 <b>Version 1.7-open_beta_test</b>
 \n\n
 * Updated CPU and GPU unlocking frequency System.

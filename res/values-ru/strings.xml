@@ -28,9 +28,9 @@
     <string name="sensor_calib_title">Калибровка акселерометра</string>
     <string name="run_button">Запустить калибровку</string>
     <string name="reset_button">Очистить данные</string>
-    <string name="info_reset">Данные о калибровке очищены.</string>
-    <string name="info_calib">Данные о калибровке сохранены.</string>
-    <string name="info_tips">Положите устройство на ровную поверхность.</string>
+    <string name="calib_reset">Данные о калибровке очищены</string>
+    <string name="calib_run">Данные о калибровке сохранены</string>
+    <string name="tips">Положите устройство на ровную поверхность</string>
     <string name="cpuboost_unlocked">Частота CPU Разблокирована</string>
     <string name="cpuboost_locked">Частота CPU Заблокирована</string>
     <string name="gpuboost_unlocked">Частота GPU Разблокирована</string>
@@ -39,9 +39,15 @@
     <string name="function_enabled">Функция Включена</string>
     <string name="function_disabled">Фукнция Выключена</string>
     <string name="back_actmain">Гл.Экран</string>
-    <string name="unsupport_device">Данная программа только для устройств,на которых установлен процессор "Actions ATM702X".</string>
+    <string name="unsupport_device">Данная программа только для устройств,на которых установлен процессор Actions ATM7029.</string>
     <string name="changelog_title">Список изменений</string>
     <string name="changelog_text">
+<b>Версия 1.8-открытое_бето_тестирование</b>
+\n\n
+* Некоторые исправления для Калибровки акселерометра.
+\n
+* Некоторые исправления в коде и в переводе.
+\n\n 
 <b>Версия 1.7-открытое_бето_тестирование</b>
 \n\n
 * Обновлена система разблокировки частота CPU и GPU.
@@ -51,7 +57,7 @@
 \n
 * Исправлена Система Сохранения.
 \n
-* Некоторые Исправления.
+* Некоторые исправления.
 \n\n
 <b>Версия 1.6-закрытое_бето_тестирование</b>
 \n\n

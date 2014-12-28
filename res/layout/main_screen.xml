@@ -125,6 +125,7 @@
         android:layout_alignRight="@+id/gpuboost_btn"
         android:layout_below="@+id/freezes"
         android:textColor="#4b0082"
+        android:visibility="visible"
         android:textOff="@string/off"
         android:textOn="@string/on" />
 
@@ -136,6 +137,7 @@
         android:layout_below="@+id/gpuboost_btn"
         android:layout_marginTop="22dp"
         android:text="@string/freezes"
+        android:visibility="visible"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#4b0082" />
     

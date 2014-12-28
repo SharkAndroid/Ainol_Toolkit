@@ -47,7 +47,7 @@ public class ACTMain extends Activity {
     boolean gpuboost_state;
     boolean freezes_state;
     
-    public static class HelpFragment extends DialogFragment {
+    public static class ChangelogFragment extends DialogFragment {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
             View v = inflater.inflate(R.layout.changelog, null);
@@ -82,7 +82,7 @@ public class ACTMain extends Activity {
         }
         
         String bplatform = getProp("ro.board.platform");
-        if(bplatform == null || !bplatform.trim().equals("ATM702X")) {
+        if (bplatform == null || !bplatform.trim().equals("ATM702X")) {
             showWarningDialog(getString(R.string.unsupport_device, bplatform), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -91,12 +91,13 @@ public class ACTMain extends Activity {
             });
         }
         
-        String sharkandroid = getProp("ro.sa.versionid");
-        if(sharkandroid == null) {
-		    freezes_text.setVisibility(View.GONE);
+        String sharkandroid_old = getProp("ro.sa.version");
+        String sharkandroid_new = getProp("ro.sa.versionid");
+        if (sharkandroid_new == null || sharkandroid_old == null) {
+        	freezes_text.setVisibility(View.GONE);
         	freezes.setVisibility(View.GONE);
         }
-        
+    	
         final Button calib_button = (Button)findViewById(R.id.calib_button);
         calib_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -182,7 +183,7 @@ public class ACTMain extends Activity {
             process.destroy();
             return value;
         } catch (IOException e) {
-            Log.e("getProp exception",e.toString(),e);
+            Log.d("getProp exception",e.toString(),e);
             return null;
         }
     }	
@@ -230,7 +231,7 @@ public class ACTMain extends Activity {
                 startActivity(intent2);
                 return true;
             case R.id.changelog:
-                DialogFragment df = new HelpFragment();
+                DialogFragment df = new ChangelogFragment();
                 df.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
                 df.show(getFragmentManager(), "changelog");
                 return true;
@@ -247,7 +248,12 @@ public class ACTMain extends Activity {
         }
         catch (Exception e) {
         	e.printStackTrace();
-            Toast.makeText(this ,getString(R.string.no_root), Toast.LENGTH_SHORT).show();
+        	showWarningDialog(getString(R.string.no_root), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            });
         }
     }
 }

@@ -1,12 +1,12 @@
 Actions_Tools
 =============
-* This program only for gs702a platform that has Actions ATM7029 processor.
+* This program only for devices that have Actions ATM7029 processor.
 
 Features:
 ==========
 * Unlocking CPU and GPU frequency(that locked on Stock Rom).
 * Calibrate Accelerometer.
-* Fix freezes at Ainol Captain(Rhino) on SharkAndroid firmware
+* Fix freezes at Ainol Captain(Rhino) on SharkAndroid firmware.
 
 Copyrights:
 ===========
@@ -23,4 +23,4 @@ Copyrights:
 
 TODO:
 =====
-* Fix Calibrate Accelerometer function.
+* Fix Gravity Sensor Calibration function.

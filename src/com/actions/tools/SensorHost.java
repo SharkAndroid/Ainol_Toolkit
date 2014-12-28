@@ -32,7 +32,6 @@ import android.view.WindowManager;
 
 public class SensorHost extends View implements View.OnTouchListener {
 	
-  public final String TAG = "SensorHost";
   Display mDisplay = null;
   RectF mOval = null;
   Paint mPaint = null;
