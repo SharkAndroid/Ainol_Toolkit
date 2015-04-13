@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2014 SharkAndroid
+<!-- Copyright (C) 2015 SharkAndroid
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -16,12 +16,11 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.actions.tools"
-    android:versionCode="20141228"
+    android:versionCode="20150412"
     android:versionName="@string/app_version" >
     
     <uses-sdk
-        android:minSdkVersion="16"
-        android:targetSdkVersion="19" />
+        android:minSdkVersion="16" />
 
     <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -41,5 +40,6 @@
         </activity> 
 		
 		<activity android:name=".SensorActivity" />
+		<activity android:name=".SensorHost" />
     </application>
 </manifest>

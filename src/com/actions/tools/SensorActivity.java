@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 SharkAndroid
+ * Copyright (C) 2015 SharkAndroid
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,27 +17,18 @@
 package com.actions.tools;
 
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.actions.tools.SensorControl;
 import com.actions.tools.SensorHost;
 
 import com.actions.tools.R;
@@ -45,62 +36,14 @@ import com.actions.tools.R;
 public class SensorActivity extends Activity implements SensorEventListener {
 	
 	public static final String TAG = "SensorActivity";
-    private Button mRunCalib;
-    private Button mResetCalib;
-    private boolean mCalibMode = false;
-    private Handler mHandler;
-    private SensorHost mSensorHost;
-    private TextView mViewText;
-    private SensorControl sc = null;
-    private SensorManager sm = null;
-    
-    private View.OnClickListener mRunCalibListener = new View.OnClickListener() {
-        public void onClick(View paramAnonymousView) {
-            SensorActivity.this.mRunCalib.setClickable(false);
-            SensorActivity.this.sc.resetCalib();
-            SensorActivity.this.mHandler.postDelayed(new Runnable() {
-                public void run() {
-                    SensorActivity.this.mRunCalib.setClickable(true);
-                    SensorActivity.this.sc.runCalib();
-                    String str1 = SensorActivity.this.sc.getCalibValue();
-                    Log.d(TAG, "Calib: " + str1);
-                    String str2 = str1 + "\n";
-                    SensorActivity.this.sc.writeCalibFile(str2);
-                    Toast.makeText(SensorActivity.this, getString(R.string.calib_run), Toast.LENGTH_SHORT).show();
-                }
-            }
-            , 1000L);
-        }
-    };
-
-    private View.OnClickListener mResetCalibListener = new View.OnClickListener() {
-        public void onClick(View paramAnonymousView) {
-            SensorActivity.this.mResetCalib.setClickable(false);
-            SensorActivity.this.sc.resetCalib();
-            SensorActivity.this.mHandler.postDelayed(new Runnable() {
-                public void run() {
-                    SensorActivity.this.mResetCalib.setClickable(true);
-                    String str1 = SensorActivity.this.sc.getCalibValue();
-                    Log.d(TAG, "Calib: " + str1);
-                    String str2 = str1 + "\n";
-                    SensorActivity.this.sc.writeCalibFile(str2);
-                    Toast.makeText(SensorActivity.this, getString(R.string.calib_reset), Toast.LENGTH_SHORT).show();
-                }
-            }
-            , 1000L);
-        }
-    };
+    private Handler handler;
+    private SensorHost sensorhost;
+    private TextView viewtext;
+    private SensorManager sensormanager = null;
 
     private void findViews() {
-        mViewText = (TextView) findViewById(R.id.view_text);
-        mRunCalib = (Button) findViewById(R.id.run_button);
-        mResetCalib = (Button) findViewById(R.id.reset_button);
-        mSensorHost = (SensorHost) findViewById(R.id.sensor_host);
-    }
-
-	private void setListensers() {
-        mRunCalib.setOnClickListener(mRunCalibListener);
-        mResetCalib.setOnClickListener(mResetCalibListener);
+        viewtext = (TextView) findViewById(R.id.view_text);
+        sensorhost = (SensorHost) findViewById(R.id.sensor_host);
     }
 
     public void onAccuracyChanged(Sensor paramSensor, int paramInt) {
@@ -112,51 +55,45 @@ public class SensorActivity extends Activity implements SensorEventListener {
         super.onCreate(paramBundle);
         setContentView(R.layout.sensor_calib);
         findViews();
-        mHandler = new Handler();
-        sm = (SensorManager) getSystemService("sensor");
-        sc = new SensorControl(this);
-        setListensers();
+        handler = new Handler();
+        sensormanager = (SensorManager) getSystemService("sensor");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        
-        mHandler = null;
-        sm = null;
-        sc = null;
+        handler = null;
+        sensormanager = null;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        
-        sm.unregisterListener(this);
+        sensormanager.unregisterListener(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        
-        sm.registerListener(this, sm.getDefaultSensor(1), 3);
+        sensormanager.registerListener(this, sensormanager.getDefaultSensor(1), 3);
     }
 
     public void onSensorChanged(SensorEvent paramSensorEvent) {
-        if ((paramSensorEvent == null) || (paramSensorEvent.values.length != 3) || (mCalibMode));
+        if ((paramSensorEvent == null) || (paramSensorEvent.values.length != 3));
         do {
-            if (mViewText != null) {
+            if (viewtext != null) {
                 Object[] arrayOfObject = new Object[3];
                 arrayOfObject[0] = Float.valueOf(paramSensorEvent.values[0]);
                 arrayOfObject[1] = Float.valueOf(paramSensorEvent.values[1]);
                 arrayOfObject[2] = Float.valueOf(paramSensorEvent.values[2]);
                 String str = String.format("X: %.3f, Y: %.3f, Z: %.3f", arrayOfObject);
-                mViewText.setText(str);
-                mViewText.setTextColor(getResources().getColor(R.color.purple));
+                viewtext.setText(str);
+                viewtext.setTextColor(getResources().getColor(R.color.purple));
             }
         }
 
-        while (mSensorHost == null);
-        mSensorHost.onSensorChanged(paramSensorEvent);
+        while (sensorhost == null);
+        sensorhost.onSensorChanged(paramSensorEvent);
     }
     
     @Override

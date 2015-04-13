@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 SharkAndroid
+ * Copyright (C) 2015 SharkAndroid
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ import java.lang.Process;
 import java.lang.String;
 
 import com.actions.tools.R;
-
 import com.stericson.RootTools.RootTools;
 import com.stericson.RootTools.execution.CommandCapture;
 
@@ -42,7 +41,6 @@ public class ACTMain extends Activity {
     private ToggleButton cpuboost;
     private ToggleButton gpuboost;
     private ToggleButton freezes;
-    private TextView freezes_text;
     boolean cpuboost_state;
     boolean gpuboost_state;
     boolean freezes_state;
@@ -65,7 +63,6 @@ public class ACTMain extends Activity {
         cpuboost = (ToggleButton) findViewById(R.id.cpuboost_btn);
 		gpuboost = (ToggleButton) findViewById(R.id.gpuboost_btn);
         freezes = (ToggleButton) findViewById(R.id.freezes_btn);
-		freezes_text = (TextView) findViewById(R.id.freezes);
 		
         SharedPreferences sharedPrefs = getSharedPreferences(SETTINGS_KEY, MODE_PRIVATE);
         cpuboost.setChecked(sharedPrefs.getBoolean("cpuboost_state", false));
@@ -90,37 +87,30 @@ public class ACTMain extends Activity {
                 }
             });
         }
-        
-        String sharkandroid_old = getProp("ro.sa.version");
-        String sharkandroid_new = getProp("ro.sa.versionid");
-        if (sharkandroid_new == null || sharkandroid_old == null) {
-        	freezes_text.setVisibility(View.GONE);
-        	freezes.setVisibility(View.GONE);
-        }
     	
-        final Button calib_button = (Button)findViewById(R.id.calib_button);
+        final Button calib_button = (Button)findViewById(R.id.sensor_button);
         calib_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-            	Intent gsensor_calib = new Intent(ACTMain.this, SensorActivity.class);
-                startActivity(gsensor_calib);
+            	Intent sb = new Intent(ACTMain.this, SensorActivity.class);
+                startActivity(sb);
             }
-            });
+        });
         
         cpuboost.setOnClickListener(new View.OnClickListener() {
         	@Override
             public void onClick(View v) {
                 if (cpuboost.isChecked()) {
-                	ExecuteRoot("echo '1'>/sys/devices/system/cpu/cpufreq/user/boost");
+                	ExecuteRoot("echo '1' > /sys/devices/system/cpu/cpufreq/user/boost");
                     ExecuteRoot("chmod 755 /sys/devices/system/cpu/cpufreq/user/boost");
                     Toast.makeText(ACTMain.this, getString(R.string.cpuboost_unlocked), Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "Warning: Maximum CPU freq unlocked!");
+                    Log.d(TAG, "Warning: Maximum CPU freq unlocked!");
                     cpuboost_state = true;
                 } else {
                 	ExecuteRoot("chmod 666 /sys/devices/system/cpu/cpufreq/user/boost");
-                    ExecuteRoot("echo '0'>/sys/devices/system/cpu/cpufreq/user/boost");
+                    ExecuteRoot("echo '0' > /sys/devices/system/cpu/cpufreq/user/boost");
                     ExecuteRoot("chmod 777 /sys/devices/system/cpu/cpufreq/user/boost");
                     Toast.makeText(ACTMain.this, getString(R.string.cpuboost_locked), Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "Warning: Maximum CPU freq locked!");
+                    Log.d(TAG, "Warning: Maximum CPU freq locked!");
                     cpuboost_state = false;
                 }
                 SharedPreferences.Editor editor = getSharedPreferences(SETTINGS_KEY, MODE_PRIVATE).edit();
@@ -133,17 +123,17 @@ public class ACTMain extends Activity {
         	@Override
             public void onClick(View v) {
                 if (gpuboost.isChecked()) {
-                	ExecuteRoot("echo '2'>/sys/devices/system/cpu/cpufreq/user/boost");
+                	ExecuteRoot("echo '2' > /sys/devices/system/cpu/cpufreq/user/boost");
 	                ExecuteRoot("chmod 755 /sys/devices/system/cpu/cpufreq/user/boost");
 	                Toast.makeText(ACTMain.this, getString(R.string.gpuboost_unlocked), Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "Warning: Maximum GPU freq unlocked!");
+                    Log.d(TAG, "Warning: Maximum GPU freq unlocked!");
                     gpuboost_state = true;
                 } else {
                 	ExecuteRoot("chmod 666 /sys/devices/system/cpu/cpufreq/gpufreq/policy");
-	                ExecuteRoot("echo '0'>/sys/devices/system/cpu/cpufreq/gpufreq/policy");
+	                ExecuteRoot("echo '0' > /sys/devices/system/cpu/cpufreq/gpufreq/policy");
 	                ExecuteRoot("chmod 777 /sys/devices/system/cpu/cpufreq/gpufreq/policy");
 	                Toast.makeText(ACTMain.this, getString(R.string.gpuboost_locked), Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "Warning: Maximum GPU freq locked!");
+                    Log.d(TAG, "Warning: Maximum GPU freq locked!");
                     gpuboost_state = false;
                 }
                 SharedPreferences.Editor editor = getSharedPreferences(SETTINGS_KEY, MODE_PRIVATE).edit();
@@ -153,29 +143,29 @@ public class ACTMain extends Activity {
         }); 
         
         freezes.setOnClickListener(new View.OnClickListener() {
-        	@Override
-            public void onClick(View v) {
-                if (freezes.isChecked()) {
-                	ExecuteRoot("echo '1'>/sys/devices/system/cpu/cpufreq/interactive/boost");
-	                ExecuteRoot("chmod 755 /sys/devices/system/cpu/cpufreq/interactive/boost");
-	                Toast.makeText(ACTMain.this, getString(R.string.function_enabled), Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "Warning: Freeze function enabled!");
-                    freezes_state = true;
-                } else {
-                	ExecuteRoot("chmod 666 /sys/devices/system/cpu/cpufreq/interactive/boost");
-	                ExecuteRoot("echo '0'>/sys/devices/system/cpu/cpufreq/interactive/boost");
-	                ExecuteRoot("chmod 777 /sys/devices/system/cpu/cpufreq/interactive/boost");
-	                Toast.makeText(ACTMain.this, getString(R.string.function_disabled), Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "Warning: Freeze function disabled!");
-                    freezes_state = false;
-                }
-                SharedPreferences.Editor editor = getSharedPreferences(SETTINGS_KEY, MODE_PRIVATE).edit();
-                editor.putBoolean("freezes_state", freezes_state);
-                editor.commit();
-            }
-        }); 
+			@Override
+			public void onClick(View v) {
+				if (freezes.isChecked()) {
+		        	ExecuteRoot("echo '1' > /sys/devices/system/cpu/cpufreq/interactive/boost");
+		            ExecuteRoot("chmod 755 /sys/devices/system/cpu/cpufreq/interactive/boost");
+		            Toast.makeText(ACTMain.this, getString(R.string.function_enabled), Toast.LENGTH_SHORT).show();
+		            Log.d(TAG, "Warning: Freeze function enabled!");
+		            freezes_state = true;
+		        } else {
+		        	ExecuteRoot("chmod 666 /sys/devices/system/cpu/cpufreq/interactive/boost");
+		            ExecuteRoot("echo '0' > /sys/devices/system/cpu/cpufreq/interactive/boost");
+		            ExecuteRoot("chmod 777 /sys/devices/system/cpu/cpufreq/interactive/boost");
+		            Toast.makeText(ACTMain.this, getString(R.string.function_disabled), Toast.LENGTH_SHORT).show();
+		            Log.d(TAG, "Warning: Freeze function disabled!");
+		            freezes_state = false;
+		        }
+		        SharedPreferences.Editor editor = getSharedPreferences(SETTINGS_KEY, MODE_PRIVATE).edit();
+		        editor.putBoolean("freezes_state", freezes_state);
+		        editor.commit();
+			}
+        });
 	}
-
+	
 	private String getProp(String key){
         try {
             Process process = Runtime.getRuntime().exec(String.format("getprop %s",key));
@@ -196,6 +186,7 @@ public class ACTMain extends Activity {
                 .show();
     }
 
+	@SuppressWarnings("deprecation")
 	@Override
     public void onDestroy() {
     	moveTaskToBack(true);
@@ -235,12 +226,40 @@ public class ACTMain extends Activity {
                 df.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
                 df.show(getFragmentManager(), "changelog");
                 return true;
+            case R.id.about:
+            	About();
 
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-	
+
+    public void About() {
+    	String av = getProp("ro.build.version.release");
+    	String bd = getProp("ro.build.date");
+    	String cm = getProp("ro.cm.version");
+    	String pm = null;
+    	if(cm != null) {
+    		pm = getProp("ro.real_device");
+    	} else {
+    		pm = getProp("ro.product.model");
+    	}
+        String message = getString(R.string.android_version) + "   " + av + "\n\n"
+                + getString(R.string.build_date) + "   " + bd + "\n\n"
+                + getString(R.string.product_model) + "   " + pm;
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle(R.string.about_title)
+                .setMessage(message)
+                .setNeutralButton(R.string.ok, null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        TextView messageView = (TextView) dialog.findViewById(android.R.id.message);
+        messageView.setTextAppearance(this, android.R.style.TextAppearance_DeviceDefault_Small);
+    }
+    
 	public void ExecuteRoot(String commandString) {
         CommandCapture command = new CommandCapture(0, commandString);
         try { 

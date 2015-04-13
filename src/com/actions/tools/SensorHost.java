@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 SharkAndroid
+ * Copyright (C) 2015 SharkAndroid
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,22 +19,19 @@ package com.actions.tools;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.hardware.SensorEvent;
 import android.util.AttributeSet;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.MeasureSpec;
-import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 
 public class SensorHost extends View implements View.OnTouchListener {
 	
-  Display mDisplay = null;
-  RectF mOval = null;
-  Paint mPaint = null;
+  Display display = null;
+  RectF rectf = null;
+  Paint paint = null;
   float vX = 0.0F;
   float vY = 0.0F;
   float vZ = 0.0F;
@@ -46,11 +43,9 @@ public class SensorHost extends View implements View.OnTouchListener {
   public SensorHost(Context paramContext, AttributeSet paramAttributeSet, int paramInt) {
     super(paramContext, paramAttributeSet, paramInt);
     
-    setOnTouchListener(this);
-    
-    mDisplay = ((WindowManager)paramContext.getSystemService("window")).getDefaultDisplay();
-    mPaint = new Paint();
-    mOval = new RectF();
+    display = ((WindowManager)paramContext.getSystemService("window")).getDefaultDisplay();
+    paint = new Paint();
+    rectf = new RectF();
   }
 
   @Override
@@ -60,19 +55,19 @@ public class SensorHost extends View implements View.OnTouchListener {
     int i = getWidth();
     int j = getHeight();
     paramCanvas.translate(i / 2, j / 2);
-    mPaint.setAntiAlias(true);
-    mPaint.setColor(-1);
-    mPaint.setStyle(Paint.Style.STROKE);
-    mPaint.setAlpha(255);
+    paint.setAntiAlias(true);
+    paint.setColor(-1);
+    paint.setStyle(Paint.Style.STROKE);
+    paint.setAlpha(255);
     int k = Math.min(i, j);
-    mOval.left = (-k / 2);
-    mOval.top = (-k / 2);
-    mOval.right = (k / 2);
-    mOval.bottom = (k / 2);
-    paramCanvas.drawArc(mOval, 0.0F, 360.0F, false, mPaint);
-    paramCanvas.drawLine(-k / 2, 0.0F, k / 2, 0.0F, mPaint);
-    paramCanvas.drawLine(0.0F, -k / 2, 0.0F, k / 2, mPaint);
-    int m = 90 * mDisplay.getRotation();
+    rectf.left = (-k / 2);
+    rectf.top = (-k / 2);
+    rectf.right = (k / 2);
+    rectf.bottom = (k / 2);
+    paramCanvas.drawArc(rectf, 0.0F, 360.0F, false, paint);
+    paramCanvas.drawLine(-k / 2, 0.0F, k / 2, 0.0F, paint);
+    paramCanvas.drawLine(0.0F, -k / 2, 0.0F, k / 2, paint);
+    int m = 90 * display.getRotation();
     if (m == 90) {
       float f2 = vX;
       vX = (-vY);
@@ -87,8 +82,8 @@ public class SensorHost extends View implements View.OnTouchListener {
       vX = vY;
       vY = (-f1);
     }
-    mPaint.setStyle(Paint.Style.FILL);
-    paramCanvas.drawCircle(-i / 2 * vX / 10.0F, j / 2 * vY / 10.0F, 20.0F - vZ, mPaint);
+    paint.setStyle(Paint.Style.FILL);
+    paramCanvas.drawCircle(-i / 2 * vX / 10.0F, j / 2 * vY / 10.0F, 20.0F - vZ, paint);
   }
 
   protected void onMeasure(int paramInt1, int paramInt2) {
@@ -106,7 +101,9 @@ public class SensorHost extends View implements View.OnTouchListener {
     }
   }
 
-  public boolean onTouch(View paramView, MotionEvent paramMotionEvent) {
-    return false;
+  @Override
+  public boolean onTouch(View v, MotionEvent event) {
+	  // TODO Auto-generated method stub
+	  return false;
   }
 }

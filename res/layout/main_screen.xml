@@ -1,4 +1,4 @@
-<!-- Copyright (C) 2014 SharkAndroid
+<!-- Copyright (C) 2015 SharkAndroid
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -107,13 +107,13 @@
         android:textColor="#4b0082" />
 
     <Button
-        android:id="@+id/calib_button"
+        android:id="@+id/sensor_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/gpuboost"
         android:layout_alignRight="@+id/settings"
         android:layout_marginRight="22dp"
-        android:text="@string/sensor_calib_title"
+        android:text="@string/sensor_title"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#4b0082" />
 
@@ -125,7 +125,6 @@
         android:layout_alignRight="@+id/gpuboost_btn"
         android:layout_below="@+id/freezes"
         android:textColor="#4b0082"
-        android:visibility="visible"
         android:textOff="@string/off"
         android:textOn="@string/on" />
 
@@ -137,8 +136,17 @@
         android:layout_below="@+id/gpuboost_btn"
         android:layout_marginTop="22dp"
         android:text="@string/freezes"
-        android:visibility="visible"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#4b0082" />
+
+    <TextView
+        android:id="@+id/freezes_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/freezes_btn"
+        android:layout_alignRight="@+id/freezes_btn"
+        android:layout_below="@+id/freezes_btn"
+        android:text="@string/freezes_text"
         android:textColor="#4b0082" />
     
 </RelativeLayout>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2014 SharkAndroid
+<!-- Copyright (C) 2015 SharkAndroid
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -16,25 +16,21 @@
 
 <resources>
     <string name="app_name">Actions Tools</string>
-    <string name="app_copyright">Copyright © 2014 SharkAndroid</string>
-    <string name="app_version">v1.8-open_beta_test</string>
+    <string name="app_copyright">Copyright © 2015 SharkAndroid</string>
+    <string name="app_version">v1.9-open_beta_test</string>
     <string name="settings">SETTING</string>
     <string name="ok">OK</string>
     <string name="exit">Exit</string>
     <string name="github">Github</string>
     <string name="update_app">Update App</string>
-    <string name="no_root">This application requires root permisions.</string>
+    <string name="no_root">This application requires root permisions</string>
     <string name="cpu_boost">Unlocking CPU Freq</string>
     <string name="gpu_boost">Unlocking GPU Freq</string>
     <string name="on">ON</string>
     <string name="off">OFF</string>
     <string name="source_code">Source Code</string>
-    <string name="unsupport_device">This program only for devices that have Actions ATM7029 processor.</string>
-    <string name="sensor_calib_title">Sensor Calibration</string>
-    <string name="run_button">Run calibration</string>
-    <string name="reset_button">Clear data</string>
-    <string name="calib_reset">Calibration data cleared</string>
-    <string name="calib_run">Calibration data saved</string>
+    <string name="unsupport_device">This program only for devices that have Actions ATM7029 processor</string>
+    <string name="sensor_title">About GSensor</string>
     <string name="tips">Please put device on a level surface and stand still</string>
     <string name="cpuboost_unlocked">CPU Freq Unlocked</string>
     <string name="cpuboost_locked">CPU Freq Locked</string>
@@ -43,9 +39,24 @@
     <string name="freezes">Fix Freezes</string>
     <string name="function_enabled">Function Enabled</string>
     <string name="function_disabled">Function Disabled</string>
+    <string name="freezes_text">Warning: This option needed for tablets which freezes after power on</string>
     <string name="back_actmain">Main Screen</string>
+    <string name="about_title">About device</string>
+    <string name="product_model">Model:</string>
+    <string name="android_version">Android version:</string>
+    <string name="build_date">Build date:</string>
     <string name="changelog_title">Changelog</string>
     <string name="changelog_text">
+<b>Version 1.9-open_beta_test</b>
+\n\n
+* Removed GSensor Calibration.
+\n
+* Added About device menu.
+\n
+* Added Freezing warning text.
+\n
+* Updated translation for EN and RU localization.
+\n\n
 <b>Version 1.8-open_beta_test</b>
 \n\n
 * Some fixes for Gravity Sensor Calibration.
