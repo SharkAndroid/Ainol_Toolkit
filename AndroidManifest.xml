@@ -16,8 +16,8 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.actions.tools"
-    android:versionCode="20150412"
-    android:versionName="@string/app_version" >
+    android:versionCode="20150510"
+    android:versionName="@string/app_version">
     
     <uses-sdk
         android:minSdkVersion="16" />

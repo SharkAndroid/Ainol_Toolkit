@@ -17,6 +17,7 @@
 package com.actions.tools;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -29,90 +30,67 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.actions.tools.SensorHost;
-
 import com.actions.tools.R;
+import com.actions.tools.SensorHost;
 
 public class SensorActivity extends Activity implements SensorEventListener {
 	
 	public static final String TAG = "SensorActivity";
-    private Handler handler;
-    private SensorHost sensorhost;
-    private TextView viewtext;
-    private SensorManager sensormanager = null;
+	private Handler mHandler;
+	private SensorManager sm = null;
+	private boolean mCalibMode = false;
 
-    private void findViews() {
-        viewtext = (TextView) findViewById(R.id.view_text);
-        sensorhost = (SensorHost) findViewById(R.id.sensor_host);
-    }
-
-    public void onAccuracyChanged(Sensor paramSensor, int paramInt) {
-    	// Auto generate method
-    }
-
-    @Override
-    protected void onCreate(Bundle paramBundle) {
-        super.onCreate(paramBundle);
-        setContentView(R.layout.sensor_calib);
-        findViews();
-        handler = new Handler();
-        sensormanager = (SensorManager) getSystemService("sensor");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        handler = null;
-        sensormanager = null;
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        sensormanager.unregisterListener(this);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        sensormanager.registerListener(this, sensormanager.getDefaultSensor(1), 3);
-    }
-
-    public void onSensorChanged(SensorEvent paramSensorEvent) {
-        if ((paramSensorEvent == null) || (paramSensorEvent.values.length != 3));
-        do {
-            if (viewtext != null) {
-                Object[] arrayOfObject = new Object[3];
-                arrayOfObject[0] = Float.valueOf(paramSensorEvent.values[0]);
-                arrayOfObject[1] = Float.valueOf(paramSensorEvent.values[1]);
-                arrayOfObject[2] = Float.valueOf(paramSensorEvent.values[2]);
-                String str = String.format("X: %.3f, Y: %.3f, Z: %.3f", arrayOfObject);
-                viewtext.setText(str);
-                viewtext.setTextColor(getResources().getColor(R.color.purple));
-            }
-        }
-
-        while (sensorhost == null);
-        sensorhost.onSensorChanged(paramSensorEvent);
-    }
-    
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.submain, menu);
-        return true;
-    }
+	private TextView mTextView;
+	private SensorHost mSensorHost;
 	
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.back_actmain:
-                Intent act_main = new Intent(SensorActivity.this, ACTMain.class);
-                startActivity(act_main);
-                return true;
+	private void findViews() {
+		mTextView = (TextView) findViewById(R.id.view_text);
+		mSensorHost = (SensorHost) findViewById(R.id.sh);
+	}
 
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+	public void onCreate(Bundle paramBundle) {
+		super.onCreate(paramBundle);
+		setContentView(R.layout.sensor_calib);
+		findViews();
+		
+		mHandler = new Handler();
+		sm = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+	}
+
+	protected void onDestroy() {
+		super.onDestroy();
+		mHandler = null;
+		sm = null;
+	}
+
+	protected void onPause() {
+		super.onPause();
+		sm.unregisterListener(this);
+	}
+
+	protected void onResume() {
+		super.onResume();
+		sm.registerListener(this,
+				sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+				SensorManager.SENSOR_DELAY_NORMAL);
+	}
+
+	public void onAccuracyChanged(Sensor paramSensor, int paramInt) {
+	}
+
+	public void onSensorChanged(SensorEvent e) {
+		if ((e != null) && (e.values.length == 3)) {
+			if(mCalibMode)
+				return;
+
+			if (mTextView != null) {
+				String txt = String.format("X: %.3f, Y: %.3f, Z: %.3f",
+						e.values[0], e.values[1], e.values[2]);
+				mTextView.setText(txt);
+				mTextView.setTextColor(getResources().getColor(R.color.purple));
+			}
+			if (mSensorHost != null)
+				mSensorHost.onSensorChanged(e);
+		}
+	}
 }

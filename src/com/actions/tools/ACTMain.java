@@ -22,6 +22,7 @@ import android.net.*;
 import android.os.*;
 import android.view.*;
 import android.widget.*;
+import android.text.TextUtils;
 import android.util.*;
 
 import java.io.BufferedReader;
@@ -90,7 +91,8 @@ public class ACTMain extends Activity {
     	
         final Button calib_button = (Button)findViewById(R.id.sensor_button);
         calib_button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
+        	@Override
+            public void onClick(View v) {
             	Intent sb = new Intent(ACTMain.this, SensorActivity.class);
                 startActivity(sb);
             }
@@ -186,7 +188,6 @@ public class ACTMain extends Activity {
                 .show();
     }
 
-	@SuppressWarnings("deprecation")
 	@Override
     public void onDestroy() {
     	moveTaskToBack(true);
@@ -235,18 +236,24 @@ public class ACTMain extends Activity {
     }
 
     public void About() {
+    	String platform = "gs702a";
+    	String cpu = "Actions ATM7029";
+    	String gpu = "Vivante GC1000+MP";
     	String av = getProp("ro.build.version.release");
     	String bd = getProp("ro.build.date");
     	String cm = getProp("ro.cm.version");
     	String pm = null;
-    	if(cm != null) {
+    	if(!TextUtils.isEmpty(cm)) {
     		pm = getProp("ro.real_device");
     	} else {
     		pm = getProp("ro.product.model");
     	}
-        String message = getString(R.string.android_version) + "   " + av + "\n\n"
+        String message = getString(R.string.platform) + "   " + platform + "\n\n"
+        		+ getString(R.string.cpu) + "   " + cpu + "\n\n"
+        		+ getString(R.string.gpu) + "   " + gpu + "\n\n"
+        		+ getString(R.string.android_version) + "   " + av + "\n\n"
                 + getString(R.string.build_date) + "   " + bd + "\n\n"
-                + getString(R.string.product_model) + "   " + pm;
+                + getString(R.string.product_model) + "   " + pm + "\n";
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setTitle(R.string.about_title)
