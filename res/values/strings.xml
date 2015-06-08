@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2015 SharkAndroid
+<!-- Copyright (C) 2015, SharkAndroid
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -13,13 +13,12 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-
 <resources>
-    <string name="app_name">Actions Tools</string>
-    <string name="app_copyright">Copyright © 2015 SharkAndroid</string>
-    <string name="app_version">v2.0</string>
+    <string name="app_name" translatable="false">Ainol Toolkit</string>
+    <string name="app_copyright" translatable="false">Copyright © 2015, SharkAndroid</string>
+    <string name="app_version" translatable="false">v3.0</string>
     <string name="settings">SETTING</string>
-    <string name="ok">OK</string>
+    <string name="ok" translatable="false">OK</string>
     <string name="exit">Exit</string>
     <string name="github">Github</string>
     <string name="update_app">Update app</string>
@@ -28,8 +27,8 @@
     <string name="gpu_boost">Unlocking GPU freq</string>
     <string name="on">ON</string>
     <string name="off">OFF</string>
-    <string name="source_code">Source Code</string>
-    <string name="unsupport_device">This program only for devices that have Actions ATM7029 processor.</string>
+    <string name="source_code">Source code</string>
+    <string name="unsupport_device">This program only for Ainol devices that have Actions ATM7029 processor.</string>
     <string name="sensor_title">About GSensor</string>
     <string name="tips">Please put device on a level surface and stand still.</string>
     <string name="cpuboost_unlocked">CPU freq unlocked.</string>
@@ -40,15 +39,24 @@
     <string name="function_enabled">Function enabled.</string>
     <string name="function_disabled">Function disabled.</string>
     <string name="freezes_text">Warning: This option needed for tablets which freezes after power on.</string>
-    <string name="about_title">About device</string>
+    <string name="about_title">About program</string>
     <string name="platform">Platform:</string>
     <string name="cpu">CPU:</string>
     <string name="gpu">GPU:</string>
     <string name="product_model">Model:</string>
     <string name="android_version">Android version:</string>
     <string name="build_date">Build date:</string>
+    <string name="as_title">About system</string>
     <string name="changelog_title">Changelog</string>
     <string name="changelog_text">
+<b>Version 3.0</b>
+\n\n
+* Added About System info and About program info.
+\n
+* Fixed bug with showing Model on firmware AOKP and AOSPA in About System.
+\n
+* Optimized application code.
+\n\n
 <b>Version 2.0</b>
 \n\n
 * Optimized function About GSensor.

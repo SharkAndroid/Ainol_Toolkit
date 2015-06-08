@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 SharkAndroid
+ * Copyright (C) 2015, SharkAndroid
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,16 @@
  * limitations under the License.
 */
 
-package com.actions.tools;
+package com.ainol.toolkit;
 
-import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.RectF;
-import android.hardware.SensorEvent;
-import android.util.AttributeSet;
-import android.view.Display;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.WindowManager;
+import android.content.*;
+import android.graphics.*;
+import android.hardware.*;
+import android.util.*;
+import android.view.*;
 
 public class SensorHost extends View implements View.OnTouchListener {
-	
-	public final String TAG = "SensorHost";
-
+	final String TAG = "SensorHost";
 	float vX = 0.0F;
 	float vY = 0.0F;
 	float vZ = 0.0F;
@@ -48,11 +41,11 @@ public class SensorHost extends View implements View.OnTouchListener {
 		WindowManager wm = (WindowManager) ctx
 				.getSystemService(Context.WINDOW_SERVICE);
 		mDisplay = wm.getDefaultDisplay();
-
 		mPaint = new Paint();
 		mOval = new RectF();
 	}
 
+	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		int h = MeasureSpec.getSize(heightMeasureSpec);
 		int w = MeasureSpec.getSize(widthMeasureSpec);
@@ -60,6 +53,7 @@ public class SensorHost extends View implements View.OnTouchListener {
 		setMeasuredDimension(r, r);
 	}
 
+	@Override
 	public void onDraw(Canvas c) {
 		super.onDraw(c);
 
@@ -85,16 +79,16 @@ public class SensorHost extends View implements View.OnTouchListener {
 
 		int k = mDisplay.getRotation() * 90;
 		float f2;
-		if (k == 90) {
+		if(k == 90) {
 			f2 = vX;
 			vX = (-vY);
 			vY = f2;
 		}
-		if (k == 180) {
+		if(k == 180) {
 			vX = (-vX);
 			vY = (-vY);
 		}
-		if (k == 270) {
+		if(k == 270) {
 			f2 = vX;
 			vX = vY;
 			vY = (-f2);
@@ -105,11 +99,11 @@ public class SensorHost extends View implements View.OnTouchListener {
 				mPaint);
 	}
 
-	public void onSensorChanged(SensorEvent e) {
-		if (e.values.length == 3) {
-			vX = e.values[0];
-			vY = e.values[1];
-			vZ = e.values[2];
+	public void onSensorChanged(SensorEvent se) {
+		if(se.values.length == 3) {
+			vX = se.values[0];
+			vY = se.values[1];
+			vZ = se.values[2];
 			invalidate();
 		}
 	}

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 SharkAndroid
+ * Copyright (C) 2015, SharkAndroid
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,36 +14,25 @@
  * limitations under the License.
 */
 
-package com.actions.tools;
+package com.ainol.toolkit;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.os.Bundle;
-import android.os.Handler;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.widget.TextView;
+import android.app.*;
+import android.content.*;
+import android.hardware.*;
+import android.os.*;
+import android.widget.*;
 
-import com.actions.tools.R;
-import com.actions.tools.SensorHost;
+import com.ainol.toolkit.R;
+import com.ainol.toolkit.SensorHost;
 
 public class SensorActivity extends Activity implements SensorEventListener {
-	
-	public static final String TAG = "SensorActivity";
+	final String TAG = "SensorActivity";
 	private Handler mHandler;
-	private SensorManager sm = null;
-	private boolean mCalibMode = false;
-
 	private TextView mTextView;
-	private SensorHost mSensorHost;
+	public SensorManager sm = null;
+	public SensorHost mSensorHost;
 	
-	private void findViews() {
+	public void findViews() {
 		mTextView = (TextView) findViewById(R.id.view_text);
 		mSensorHost = (SensorHost) findViewById(R.id.sh);
 	}
@@ -51,46 +40,51 @@ public class SensorActivity extends Activity implements SensorEventListener {
 	public void onCreate(Bundle paramBundle) {
 		super.onCreate(paramBundle);
 		setContentView(R.layout.sensor_calib);
+
 		findViews();
-		
 		mHandler = new Handler();
 		sm = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 	}
 
+	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		
 		mHandler = null;
 		sm = null;
 	}
 
+	@Override
 	protected void onPause() {
 		super.onPause();
+
 		sm.unregisterListener(this);
 	}
 
+	@Override
 	protected void onResume() {
 		super.onResume();
+
 		sm.registerListener(this,
 				sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
 				SensorManager.SENSOR_DELAY_NORMAL);
 	}
 
+	@Override
 	public void onAccuracyChanged(Sensor paramSensor, int paramInt) {
+		// TODO Auto-generated method stub
 	}
 
-	public void onSensorChanged(SensorEvent e) {
-		if ((e != null) && (e.values.length == 3)) {
-			if(mCalibMode)
-				return;
-
-			if (mTextView != null) {
+	public void onSensorChanged(SensorEvent se) {
+		if((se != null) && (se.values.length == 3)) {
+			if(mTextView != null) {
 				String txt = String.format("X: %.3f, Y: %.3f, Z: %.3f",
-						e.values[0], e.values[1], e.values[2]);
+						se.values[0], se.values[1], se.values[2]);
 				mTextView.setText(txt);
 				mTextView.setTextColor(getResources().getColor(R.color.purple));
 			}
-			if (mSensorHost != null)
-				mSensorHost.onSensorChanged(e);
+			if(mSensorHost != null)
+				mSensorHost.onSensorChanged(se);
 		}
 	}
 }
