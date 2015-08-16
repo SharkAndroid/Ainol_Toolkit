@@ -16,7 +16,7 @@
 <resources>
     <string name="app_name" translatable="false">Ainol Toolkit</string>
     <string name="app_copyright" translatable="false">Copyright © 2015, SharkAndroid</string>
-    <string name="app_version" translatable="false">v3.0</string>
+    <string name="app_version" translatable="false">v4.0</string>
     <string name="settings">SETTING</string>
     <string name="ok" translatable="false">OK</string>
     <string name="exit">Exit</string>
@@ -27,19 +27,21 @@
     <string name="gpu_boost">Unlocking GPU freq</string>
     <string name="on">ON</string>
     <string name="off">OFF</string>
+    <string name="function_enabled">Function enabled.</string>
+    <string name="function_disabled">Function disabled.</string>
     <string name="source_code">Source code</string>
     <string name="unsupport_device">This program only for Ainol devices that have Actions ATM7029 processor.</string>
     <string name="sensor_title">About GSensor</string>
     <string name="tips">Please put device on a level surface and stand still.</string>
+    <string name="gsensor_driver">Driver:</string>
     <string name="cpuboost_unlocked">CPU freq unlocked.</string>
     <string name="cpuboost_locked">CPU freq locked.</string>
     <string name="gpuboost_unlocked">GPU freq unlocked.</string>
     <string name="gpuboost_locked">GPU freq locked.</string>
     <string name="freezes">Fix freezes</string>
-    <string name="function_enabled">Function enabled.</string>
-    <string name="function_disabled">Function disabled.</string>
-    <string name="freezes_text">Warning: This option needed for tablets which freezes after power on.</string>
-    <string name="about_title">About program</string>
+    <string name="freezes_text">Warning: This option needed for tablets which freezes after power on!</string>
+    <string name="colorfix">Fix the color gamut</string>
+    <string name="colorfix_text">Warning: This option needed for tablets which have problems with color gamut after flashing firmware!</string>
     <string name="platform">Platform:</string>
     <string name="cpu">CPU:</string>
     <string name="gpu">GPU:</string>
@@ -47,91 +49,62 @@
     <string name="android_version">Android version:</string>
     <string name="build_date">Build date:</string>
     <string name="as_title">About system</string>
+    <string name="about_title">About program</string>
+    <string name="about_text">
+        <b><i>Ainol Toolkit\n
+        Mobile tool for Ainol devices that have Actions ATM7029 processor.\n\n\n
+        Author: iBullRay.\n
+        Version: 4.0.\n
+        Copyright © 2015, SharkAndroid.\n\n</i></b>
+    </string>
     <string name="changelog_title">Changelog</string>
     <string name="changelog_text">
-<b>Version 3.0</b>
-\n\n
-* Added About System info and About program info.
-\n
-* Fixed bug with showing Model on firmware AOKP and AOSPA in About System.
-\n
-* Optimized application code.
-\n\n
-<b>Version 2.0</b>
-\n\n
-* Optimized function About GSensor.
-\n
-* Added Platform,CPU and GPU strings in About device menu.
-\n
-* Fixed bug with Model in About device menu.
-\n
-* Updated translation for EN and RU localization.
-\n\n
-<b>Version 1.9-open_beta_test</b>
-\n\n
-* Removed GSensor Calibration.
-\n
-* Added About device menu.
-\n
-* Added Freezing warning text.
-\n
-* Updated translation for EN and RU localization.
-\n\n
-<b>Version 1.8-open_beta_test</b>
-\n\n
-* Some fixes for Gravity Sensor Calibration.
-\n
-* Some fixes in code and in translation.
-\n\n
-<b>Version 1.7-open_beta_test</b>
-\n\n
-* Updated CPU and GPU unlocking frequency System.
-\n 
-* New function, Fix Freezes.
-\nThis function fix freezes at Ainol Captain(Rhino) on SharkAndroid firmware.
-\n
-* Fixed Saving System.
-\n
-* Some fixes.
-\n\n
-<b>Version 1.6-closed_beta_test</b>
-\n\n
-* Updated CPU and GPU unlocking frequency System.
-\n
-* Some fixes.
-\n\n
-<b>Version 1.5-closed_beta_test</b>
-\n\n
-* Added Gravity Sensor Calibration.
-\n
-* Update UI style.
-\n\n
-<b>Version 1.4-test</b>
-\n\n
-* New UI style.
-\n
-* Updated hardware checking system.
-\n
-* Fixed bugs.    
-\n\n
-<b>Version 1.3-test</b>
-\n\n
-* Updated Changelog list system.
-\n
-* Updated Unlocking CPU and GPU freq system.
-\n\n
-<b>Version 1.2-test</b>
-\n\n
-* Added Update App system.
-\n
-* New main icon.
-\n\n
-<b>Version 1.1-test</b>
-\n\n
-* Added source code url.
-\n
-* Added hardware checking.
-\n
-* First build.
-\n\n</string>
+        <b>Version 4.0</b>\n\n
+        * Added Fix the color gamut function and changed Fix freezes function.\nThe new function fixes the problems with color gamut after flashing firmware.\n
+        * Improved method of displaying information in About program menu.\n
+        * Added GSensor driver info in About GSensor function.\n
+        * Updated translation for EN and RU localization.\n\n
+		<b>Version 3.0</b>\n\n
+		* Added About System info and About program info.\n
+		* Fixed bug with showing Model on firmware AOKP and AOSPA in About System.\n
+		* Optimized application code.\n\n
+		<b>Version 2.0</b>\n\n
+		* Optimized function About GSensor.\n
+		* Added Platform,CPU and GPU strings in About device menu.\n
+		* Fixed bug with Model in About device menu.\n
+		* Updated translation for EN and RU localization.\n\n
+		<b>Version 1.9-open_beta_test</b>\n\n
+		* Removed GSensor Calibration.\n
+		* Added About device menu.\n
+		* Added warning text for Fix freezes function.\n
+		* Updated translation for EN and RU localization.\n\n
+		<b>Version 1.8-open_beta_test</b>\n\n
+		* Some fixes for Gravity Sensor Calibration.\n
+		* Some fixes in code and in translation.\n\n
+		<b>Version 1.7-open_beta_test</b>\n\n
+		* Updated CPU and GPU unlocking frequency System.\n 
+		* New function, Fix Freezes.\nThis function fix freezes at Ainol Captain(Rhino) on SharkAndroid firmware.\n
+		* Fixed Saving System.\n
+		* Some fixes.\n\n
+		<b>Version 1.6-closed_beta_test</b>\n\n
+		* Updated CPU and GPU unlocking frequency System.\n
+		* Some fixes.\n\n
+		<b>Version 1.5-closed_beta_test</b>\n\n
+		* Added Gravity Sensor Calibration.\n
+		* Update UI style.\n\n
+		<b>Version 1.4-test</b>\n\n
+		* New UI style.\n
+		* Updated hardware checking system.\n
+		* Fixed bugs.    \n\n
+		<b>Version 1.3-test</b>\n\n
+		* Updated Changelog list system.\n
+		* Updated Unlocking CPU and GPU freq system.\n\n
+		<b>Version 1.2-test</b>\n\n
+		* Added Update App system.\n
+		* New main icon.\n\n
+		<b>Version 1.1-test</b>\n\n
+		* Added source code url.\n
+		* Added hardware checking.\n
+		* First build.\n\n
+	</string>
 </resources>

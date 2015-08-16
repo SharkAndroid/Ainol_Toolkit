@@ -18,10 +18,10 @@ package com.ainol.toolkit;
 
 import android.app.*;
 import android.content.*;
+import android.content.res.AssetManager;
 import android.net.*;
 import android.os.*;
 import android.view.*;
-import android.webkit.*;
 import android.widget.*;
 import android.text.*;
 import android.util.*;
@@ -29,7 +29,6 @@ import android.util.*;
 import java.io.*;
 import java.lang.Process;
 import java.lang.String;
-import java.util.*;
 
 import com.ainol.toolkit.R;
 import com.ainol.toolkit.SensorActivity;
@@ -42,12 +41,13 @@ public class ATMain extends Activity {
     private ToggleButton cpuboost;
     private ToggleButton gpuboost;
     private ToggleButton freezes;
+    private ToggleButton colorfix;
     boolean cpuboost_state;
     boolean gpuboost_state;
     boolean freezes_state;
+    boolean colorfix_state;
 
-    public static class ChangelogFragment extends DialogFragment {
-
+    public class ChangelogFragment extends DialogFragment {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
             View v = inflater.inflate(R.layout.changelog, null);
@@ -57,6 +57,16 @@ public class ATMain extends Activity {
         }
     }
 
+    public class AboutFragment extends DialogFragment {
+    	@Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
+            View v = inflater.inflate(R.layout.about, null);
+            TextView tv = (TextView) v.findViewById(R.id.about);
+            tv.setText(R.string.about_text);
+            return v;
+        }
+    }
+    
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,11 +75,13 @@ public class ATMain extends Activity {
         cpuboost = (ToggleButton) findViewById(R.id.cpuboost_btn);
 		gpuboost = (ToggleButton) findViewById(R.id.gpuboost_btn);
         freezes = (ToggleButton) findViewById(R.id.freezes_btn);
+        colorfix = (ToggleButton) findViewById(R.id.colorfix_btn);
 
         SharedPreferences sharedPrefs = getSharedPreferences(SETTINGS_KEY, MODE_PRIVATE);
         cpuboost.setChecked(sharedPrefs.getBoolean("cpuboost_state", false));
         gpuboost.setChecked(sharedPrefs.getBoolean("gpuboost_state", false));
         freezes.setChecked(sharedPrefs.getBoolean("freezes_state", false));
+        colorfix.setChecked(sharedPrefs.getBoolean("colorfix_state", false));
 
         if (!RootTools.isAccessGiven()) { 
         	showWarningDialog(getString(R.string.no_root), new DialogInterface.OnClickListener() {
@@ -156,22 +168,97 @@ public class ATMain extends Activity {
         freezes.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				AssetManager am = getAssets();
+				InputStream ins = null;
+			    OutputStream outs = null;
 				if (freezes.isChecked()) {
-		        	ExecuteRoot("echo '1' > /sys/devices/system/cpu/cpufreq/interactive/boost");
-		            ExecuteRoot("chmod 755 /sys/devices/system/cpu/cpufreq/interactive/boost");
+					String fixfile = null;
+					String pdevice = getProp("ro.product.device");
+					if (pdevice.trim().equals("hero2v2")) {
+						fixfile = "freezes_fix_hero2v2.zip";
+					}
+					else if (pdevice.trim().equals("hero2v1")) {
+						fixfile = "freezes_fix_hero2v1.zip";
+					}
+					else if (pdevice.trim().equals("venus")) {
+						fixfile = "freezes_fix_venus.zip";
+					}
+					else if (pdevice.trim().equals("captain")) {
+						fixfile = "freezes_fix_captain.zip";
+					}
+					try {
+						ins = am.open(fixfile);
+			            outs = new FileOutputStream(Environment.getExternalStorageDirectory().toString() + "/" + fixfile);
+			            copyFile(ins, outs);
+			            ins.close();
+			            ins = null;
+			            outs.flush();
+			            outs.close();
+			            outs = null;
+					}
+					catch(IOException e) {
+						Log.d(TAG, "Failed to copy  " + fixfile + "to " + outs, e);
+				    }
 		            Toast.makeText(ATMain.this, getString(R.string.function_enabled), Toast.LENGTH_SHORT).show();
 		            Log.d(TAG, "Warning: Freeze function enabled!");
-		            freezes_state = true;
+		            freezes_state = true;  
 		        } else {
-		        	ExecuteRoot("chmod 666 /sys/devices/system/cpu/cpufreq/interactive/boost");
-		            ExecuteRoot("echo '0' > /sys/devices/system/cpu/cpufreq/interactive/boost");
-		            ExecuteRoot("chmod 777 /sys/devices/system/cpu/cpufreq/interactive/boost");
+		        	String unfixfile = null;
+		        	String pdevice = getProp("ro.product.device");
+					if (pdevice.trim().equals("hero2v2")) {
+						unfixfile = "freezes_unfix_hero2v2.zip";
+					}
+					else if (pdevice.trim().equals("hero2v1")) {
+						unfixfile = "freezes_unfix_hero2v1.zip";
+					}
+					else if (pdevice.trim().equals("venus")) {
+						unfixfile = "freezes_unfix_venus.zip";
+					}
+					else if (pdevice.trim().equals("captain")) {
+						unfixfile = "freezes_unfix_captain.zip";
+					}
+					try {
+						ins = am.open(unfixfile);
+			            outs = new FileOutputStream(Environment.getExternalStorageDirectory().toString() + "/" + unfixfile);
+			            copyFile(ins, outs);
+			            ins.close();
+			            ins = null;
+			            outs.flush();
+			            outs.close();
+			            outs = null;
+					}
+					catch(IOException e) {
+						Log.d(TAG, "Failed to copy  " + unfixfile + "to " + outs, e);
+				    }
 		            Toast.makeText(ATMain.this, getString(R.string.function_disabled), Toast.LENGTH_SHORT).show();
 		            Log.d(TAG, "Warning: Freeze function disabled!");
 		            freezes_state = false;
 		        }
 		        SharedPreferences.Editor editor = getSharedPreferences(SETTINGS_KEY, MODE_PRIVATE).edit();
 		        editor.putBoolean("freezes_state", freezes_state);
+		        editor.commit();
+			}
+        });
+        
+        colorfix.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (colorfix.isChecked()) {
+		        	ExecuteRoot("echo '1' > /sys/devices/system/cpu/cpufreq/interactive/boost");
+		            ExecuteRoot("chmod 755 /sys/devices/system/cpu/cpufreq/interactive/boost");
+		            Toast.makeText(ATMain.this, getString(R.string.function_enabled), Toast.LENGTH_SHORT).show();
+		            Log.d(TAG, "Warning: Colorfix function enabled!");
+		            colorfix_state = true;
+		        } else {
+		        	ExecuteRoot("chmod 666 /sys/devices/system/cpu/cpufreq/interactive/boost");
+		            ExecuteRoot("echo '0' > /sys/devices/system/cpu/cpufreq/interactive/boost");
+		            ExecuteRoot("chmod 777 /sys/devices/system/cpu/cpufreq/interactive/boost");
+		            Toast.makeText(ATMain.this, getString(R.string.function_disabled), Toast.LENGTH_SHORT).show();
+		            Log.d(TAG, "Warning: Colorfix function disabled!");
+		            colorfix_state = false;
+		        }
+		        SharedPreferences.Editor editor = getSharedPreferences(SETTINGS_KEY, MODE_PRIVATE).edit();
+		        editor.putBoolean("colorfix_state", colorfix_state);
 		        editor.commit();
 			}
         });
@@ -211,12 +298,15 @@ public class ATMain extends Activity {
                 startActivity(intent2);
                 return true;
             case R.id.changelog:
-                DialogFragment df = new ChangelogFragment();
-                df.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
-                df.show(getFragmentManager(), "changelog");
+                DialogFragment df1 = new ChangelogFragment();
+                df1.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+                df1.show(getFragmentManager(), "changelog");
                 return true;
             case R.id.about:
-            	About();
+            	DialogFragment df2 = new AboutFragment();
+                df2.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+                df2.show(getFragmentManager(), "about");
+                return true;
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -240,7 +330,7 @@ public class ATMain extends Activity {
 
     	/* Device name */
     	String model = null;
-        if(!TextUtils.isEmpty(cm) || !TextUtils.isEmpty(aokp) || !TextUtils.isEmpty(aospa)) {
+        if (!TextUtils.isEmpty(cm) || !TextUtils.isEmpty(aokp) || !TextUtils.isEmpty(aospa)) {
         	model = getProp("ro.real_device");
         } else {
         	model = getProp("ro.product.model");
@@ -261,30 +351,6 @@ public class ATMain extends Activity {
 
 		AlertDialog dialog = builder.create();
 		dialog.show();
-    }
-
-    public void About() {
-    	String language = getCurrentSystemLanguage();
-    	WebView wv = new WebView(this);
-        WebSettings settings = wv.getSettings();
-        wv.getSettings().setJavaScriptEnabled(true);
-        wv.getSettings().setSupportZoom(true);
-    	wv.getSettings().setBuiltInZoomControls(true);
-    	if(language.equals("ru_RU")) {
-    		settings.setDefaultTextEncodingName("windows-1251");
-	        wv.loadUrl("file:///android_asset/about_ru.html");
-	        setContentView(wv);
-    	} else {
-    		settings.setDefaultTextEncodingName("utf-8");
-            wv.loadUrl("file:///android_asset/about_en.html");
-            setContentView(wv);
-    	}
-    }
-    
-    // Get current system language
-    public static String getCurrentSystemLanguage() {
-    	String language = Locale.getDefault().toString();
-    	return language;
     }
     
     // Get string from build.prop
@@ -325,4 +391,13 @@ public class ATMain extends Activity {
             });
         }
     }
+	
+	// Copy file from asset to misc
+	public void copyFile(InputStream ins, OutputStream outs) throws IOException {
+	      byte[] buffer = new byte[1024];
+	      int read;
+	      while((read = ins.read(buffer)) != -1) {
+	            outs.write(buffer, 0, read);
+	      }
+	}
 }

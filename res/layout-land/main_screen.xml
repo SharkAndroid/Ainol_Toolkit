@@ -141,5 +141,37 @@
         android:text="@string/as_title"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#4b0082" />
+
+    <TextView
+        android:id="@+id/colorfix"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/freezes_text"
+        android:layout_below="@+id/freezes_text"
+        android:layout_marginTop="27dp"
+        android:text="@string/colorfix"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#4b0082" />
+
+    <ToggleButton
+        android:id="@+id/colorfix_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/colorfix"
+        android:layout_alignRight="@+id/colorfix"
+        android:layout_below="@+id/colorfix"
+        android:textColor="#4b0082"
+        android:textOff="@string/off"
+        android:textOn="@string/on" />
+    
+    <TextView
+        android:id="@+id/colorfix_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/colorfix_btn"
+        android:layout_alignRight="@+id/colorfix_btn"
+        android:layout_below="@+id/colorfix_btn"
+        android:text="@string/colorfix_text"
+        android:textColor="#4b0082" />
     
 </RelativeLayout>
