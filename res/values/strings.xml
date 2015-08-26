@@ -16,49 +16,63 @@
 <resources>
     <string name="app_name" translatable="false">Ainol Toolkit</string>
     <string name="app_copyright" translatable="false">Copyright © 2015, SharkAndroid</string>
-    <string name="app_version" translatable="false">v4.0</string>
+    <string name="app_version" translatable="false">v5.0</string>
     <string name="settings">SETTING</string>
-    <string name="ok" translatable="false">OK</string>
-    <string name="exit">Exit</string>
-    <string name="github">Github</string>
-    <string name="update_app">Update app</string>
-    <string name="no_root">This application requires root permisions.</string>
     <string name="cpu_boost">Unlocking CPU freq</string>
     <string name="gpu_boost">Unlocking GPU freq</string>
+    <string name="freezes">Fix freezes</string>
+    <string name="freezes_text">Warning: This option needed for tablets which freezes after power on!</string>
+    <string name="colorfix">Fix the color gamut</string>
+    <string name="colorfix_text">Warning: This option needed for tablets which have problems with color gamut after flashing firmware!</string>
+    <string name="cur_cpu_freq_text">CPU freq</string>
+    <string name="cur_cpu_freq">Unknown</string>
+    <string name="cur_gpu_freq_text">GPU freq</string>
+    <string name="cur_gpu_freq">Unknown</string>
+    <string name="sensor_title">About gsensor</string>
+    <string name="as_title">About system</string>
     <string name="on">ON</string>
     <string name="off">OFF</string>
+    <string name="ok" translatable="false">OK</string>
+    <string name="exit">Exit</string>
+    <string name="update_app">Update app</string>
+    <string name="source_code">Source code</string>
+    <string name="advices">Advices</string>
+    <string name="changelog_title">Changelog</string>
+    <string name="about_title">About program</string>
     <string name="function_enabled">Function enabled.</string>
     <string name="function_disabled">Function disabled.</string>
-    <string name="source_code">Source code</string>
     <string name="unsupport_device">This program only for Ainol devices that have Actions ATM7029 processor.</string>
-    <string name="sensor_title">About GSensor</string>
+    <string name="no_root">This application requires root permisions.</string>
     <string name="tips">Please put device on a level surface and stand still.</string>
     <string name="gsensor_driver">Driver:</string>
     <string name="cpuboost_unlocked">CPU freq unlocked.</string>
     <string name="cpuboost_locked">CPU freq locked.</string>
     <string name="gpuboost_unlocked">GPU freq unlocked.</string>
     <string name="gpuboost_locked">GPU freq locked.</string>
-    <string name="freezes">Fix freezes</string>
-    <string name="freezes_text">Warning: This option needed for tablets which freezes after power on!</string>
-    <string name="colorfix">Fix the color gamut</string>
-    <string name="colorfix_text">Warning: This option needed for tablets which have problems with color gamut after flashing firmware!</string>
     <string name="platform">Platform:</string>
     <string name="cpu">CPU:</string>
     <string name="gpu">GPU:</string>
     <string name="product_model">Model:</string>
     <string name="android_version">Android version:</string>
     <string name="build_date">Build date:</string>
-    <string name="as_title">About system</string>
-    <string name="about_title">About program</string>
+    <string name="advices_text">
+        <b><i>After switching on/off function Fix freezes required:\n
+            1. Reboot tablet into recovery mode(Only TWRP or CWM).\n
+            2. Flash freezes_fix_xxx.zip/freezes_unfix_xxx.zip and reboot your tablet.\n\n</i></b>
+    </string>
     <string name="about_text">
         <b><i>Ainol Toolkit\n
         Mobile tool for Ainol devices that have Actions ATM7029 processor.\n\n\n
         Author: iBullRay.\n
-        Version: 4.0.\n
+        Version: 5.0.\n
         Copyright © 2015, SharkAndroid.\n\n</i></b>
     </string>
-    <string name="changelog_title">Changelog</string>
     <string name="changelog_text">
+        <b>Версия 5.0</b>\n\n
+        * Added index of CPU and GPU freq.\n
+        * Added Advices in menu.\n
+        * Fixed bug with Unlocking GPU Freq.\n
+        * Updated translation for EN and RU localization.\n\n
         <b>Version 4.0</b>\n\n
         * Added Fix the color gamut function and changed Fix freezes function.\nThe new function fixes the problems with color gamut after flashing firmware.\n
         * Improved method of displaying information in About program menu.\n

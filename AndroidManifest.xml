@@ -15,7 +15,7 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ainol.toolkit"
-    android:versionCode="20150816"
+    android:versionCode="20150826"
     android:versionName="@string/app_version">
     
     <uses-sdk
@@ -23,6 +23,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     
     <application
         android:allowBackup="true"

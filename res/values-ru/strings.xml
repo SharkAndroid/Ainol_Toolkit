@@ -15,27 +15,35 @@
 -->
 <resources>
     <string name="settings">НАСТРОЙКА</string>
-    <string name="exit">Выйти</string>
-    <string name="update_app">Обновить приложение</string>
-    <string name="no_root">Данному приложению нужны root-права.</string>
     <string name="cpu_boost">Разблокировка CPU частот</string>
     <string name="gpu_boost">Разблокировка GPU частот</string>
+    <string name="freezes">Исправить зависания</string>
+    <string name="freezes_text">Внимание: Данная функция нужна для планшетов,которые зависают после включения!</string>
+    <string name="colorfix">Исправить цветовую гамму</string>
+    <string name="colorfix_text">Внимание: Данная функция нужна для планшетов,которые имеют проблемы с цветовой гаммой после перепрошивки!</string>
+    <string name="cur_cpu_freq_text">Частота CPU</string>
+    <string name="cur_cpu_freq">Неизвестно</string>
+    <string name="cur_gpu_freq_text">Частота GPU</string>
+    <string name="cur_gpu_freq">Неизвестно</string>
+    <string name="sensor_title">О акселерометре</string>
+    <string name="as_title">О системе</string>
     <string name="on">ВКЛ.</string>
     <string name="off">ВЫКЛ.</string>
+    <string name="exit">Выйти</string>
+    <string name="update_app">Обновить приложение</string>
     <string name="source_code">Исходный код</string>
-    <string name="sensor_title">Об акселерометре</string>
+    <string name="advices">Советы</string>
+    <string name="changelog_title">Список изменений</string>
+    <string name="about_title">О программе</string>
+    <string name="no_root">Данному приложению нужны root-права.</string>
     <string name="tips">Положите устройство на ровную поверхность.</string>
     <string name="gsensor_driver">Драйвер:</string>
     <string name="cpuboost_unlocked">Частота CPU разблокирована.</string>
     <string name="cpuboost_locked">Частота CPU заблокирована.</string>
     <string name="gpuboost_unlocked">Частота GPU разблокирована.</string>
     <string name="gpuboost_locked">Частота GPU заблокирована.</string>
-    <string name="freezes">Исправить зависания</string>
     <string name="function_enabled">Функция включена.</string>
     <string name="function_disabled">Фукнция выключена.</string>
-    <string name="freezes_text">Внимание: Данная функция нужна для планшетов,которые зависают после включения!</string>
-    <string name="colorfix">Ипсравить цветовую гамму</string>
-    <string name="colorfix_text">Внимание: Данная функция нужна для планшетов,которые имеют проблемы с цветовой гаммой после перепрошивки!</string>
     <string name="unsupport_device">Данная программа только для устройств от Ainol,на которых установлен процессор Actions ATM7029.</string>
     <string name="platform">Платформа:</string>
     <string name="cpu">Процессор:</string>
@@ -43,17 +51,24 @@
     <string name="product_model">Модель:</string>
     <string name="android_version">Версия Android:</string>
     <string name="build_date">Дата сборки:</string>
-    <string name="as_title">О системе</string>
-    <string name="about_title">О программе</string>
+    <string name="advices_text">
+        <b><i>После вкл./выкл. функции Исправления зависаний требуется:\n
+            1. Перезагрузите планшет в рекавери(Только TWRP или CWM).\n
+            2. Прошейте freezes_fix_xxx.zip/freezes_unfix_xxx.zip и перезагрузите ваш планшет.\n\n</i></b>
+    </string>
     <string name="about_text">
         <b><i>Ainol Toolkit\n
         Мобильное приложение для девайсов от Ainol на базе процессора Actions ATM7029.\n\n\n
         Автор: iBullRay.\n
-        Версия: 4.0.\n
+        Версия: 5.0.\n
         Авторское право © 2015, SharkAndroid.\n\n</i></b>
     </string>
-    <string name="changelog_title">Список изменений</string>
     <string name="changelog_text">
+        <b>Версия 5.0</b>\n\n
+        * Добавлен показатель частоты CPU и GPU.\n
+        * Добавлены Советы в меню.\n
+        * Исправлен баг с Разблокировкой GPU частот.\n
+        * Обновлен перевод для локализации EN и RU.\n\n
         <b>Версия 4.0</b>\n\n
         * Добавлена функция Исправления цветовой гаммы и изменена функция Исправить зависания.\nНовая функция исправляет проблемы с цветовой гаммой после перепрошивки.\n
         * Улучшен метод вывода информации в меню О программе.\n

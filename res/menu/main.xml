@@ -27,6 +27,11 @@
         android:showAsAction="never" />
     
     <item
+        android:id="@+id/advices"
+        android:title="@string/advices"
+        android:showAsAction="never" />
+    
+    <item
         android:id="@+id/changelog"
         android:title="@string/changelog_title"
         android:showAsAction="never" />

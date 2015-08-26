@@ -42,12 +42,82 @@ public class ATMain extends Activity {
     private ToggleButton gpuboost;
     private ToggleButton freezes;
     private ToggleButton colorfix;
+    private TextView cur_cpu_freq;
+    private TextView cur_gpu_freq;
+    final String cpu_freq_file = "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq";
+    final String gpu_freq_file = "/sys/devices/system/cpu/cpufreq/gpufreq/gpu3dfreq";
+    private CurCPUThread cur_cpu_thread = new CurCPUThread();
+    private CurGPUThread cur_gpu_thread = new CurGPUThread();
     boolean cpuboost_state;
     boolean gpuboost_state;
     boolean freezes_state;
     boolean colorfix_state;
 
-    public class ChangelogFragment extends DialogFragment {
+    private Handler cur_cpu_hand = new Handler() {
+        public void handleMessage(Message msg) {
+            cur_cpu_freq.setText(toMHz((String) msg.obj));
+        }
+    };
+    
+    private Handler cur_gpu_hand = new Handler() {
+    	public void handleMessage(Message msg) {
+    		cur_gpu_freq.setText(toMHz((String) msg.obj));
+    	}
+    };
+    
+    private class CurCPUThread extends Thread {
+        private boolean interrupt = false;
+
+        public void interrupt() {
+            interrupt = true;
+        }
+
+        @Override
+        public void run() {
+            try {
+                while (!interrupt) {
+                    sleep(500);
+                    final String curFreq = fileReadOneLine(cpu_freq_file);
+                    if (curFreq != null)
+                        cur_cpu_hand.sendMessage(cur_cpu_hand.obtainMessage(0, curFreq));
+                }
+            } catch (InterruptedException e) {
+            }
+        }
+    };
+    
+    private class CurGPUThread extends Thread {
+        private boolean interrupt = false;
+
+        public void interrupt() {
+            interrupt = true;
+        }
+
+        @Override
+        public void run() {
+            try {
+                while (!interrupt) {
+                    sleep(500);
+                    final String curFreq = fileReadOneLine(gpu_freq_file);
+                    if (curFreq != null)
+                        cur_gpu_hand.sendMessage(cur_gpu_hand.obtainMessage(0, curFreq));
+                }
+            } catch (InterruptedException e) {
+            }
+        }
+    };
+    
+    private class AdvicesFragment extends DialogFragment {
+    	@Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
+            View v = inflater.inflate(R.layout.advices, null);
+            TextView tv = (TextView) v.findViewById(R.id.advices);
+            tv.setText(R.string.advices_text);
+            return v;
+        }
+    }
+    
+    private class ChangelogFragment extends DialogFragment {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
             View v = inflater.inflate(R.layout.changelog, null);
@@ -57,7 +127,7 @@ public class ATMain extends Activity {
         }
     }
 
-    public class AboutFragment extends DialogFragment {
+    private class AboutFragment extends DialogFragment {
     	@Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
             View v = inflater.inflate(R.layout.about, null);
@@ -76,7 +146,41 @@ public class ATMain extends Activity {
 		gpuboost = (ToggleButton) findViewById(R.id.gpuboost_btn);
         freezes = (ToggleButton) findViewById(R.id.freezes_btn);
         colorfix = (ToggleButton) findViewById(R.id.colorfix_btn);
+        cur_cpu_freq = (TextView) findViewById(R.id.cur_cpu_freq);
+        cur_gpu_freq = (TextView) findViewById(R.id.cur_gpu_freq);
+        String[] cpu_freq = new String[0];
+        String cpu_freq_line;
+        String[] cpu_frequencies;
+        String[] gpu_freq = new String[0];
+        String gpu_freq_line;
+        String[] gpu_frequencies;
+        
+        // Change current cpu freq text if we dont have a list file
+        if (!fileExists(cpu_freq_file) || (cpu_freq_line = fileReadOneLine(cpu_freq_file)) == null) {
+        	cur_cpu_freq.setText(getString(R.string.cur_cpu_freq));
+        } else {
+        	cur_cpu_freq.setText(toMHz(cpu_freq_line));
+            cur_cpu_thread.start();
+            cpu_freq = cpu_freq_line.split(" ");
+            cpu_frequencies = new String[cpu_freq.length];
+            for (int i = 0; i < cpu_frequencies.length; i++) {
+                cpu_frequencies[i] = toMHz(cpu_freq[i]);
+            }
+        }
 
+        // Change current gpu freq text if we dont have a list file
+        if (!fileExists(gpu_freq_file) || (gpu_freq_line = fileReadOneLine(gpu_freq_file)) == null) {
+        	cur_gpu_freq.setText(getString(R.string.cur_gpu_freq));
+        } else {
+        	cur_gpu_freq.setText(toMHz(gpu_freq_line));
+            cur_gpu_thread.start();
+            gpu_freq = gpu_freq_line.split(" ");
+            gpu_frequencies = new String[gpu_freq.length];
+            for (int i = 0; i < gpu_frequencies.length; i++) {
+                gpu_frequencies[i] = toMHz(gpu_freq[i]);
+            }
+        }
+        
         SharedPreferences sharedPrefs = getSharedPreferences(SETTINGS_KEY, MODE_PRIVATE);
         cpuboost.setChecked(sharedPrefs.getBoolean("cpuboost_state", false));
         gpuboost.setChecked(sharedPrefs.getBoolean("gpuboost_state", false));
@@ -146,8 +250,8 @@ public class ATMain extends Activity {
         	@Override
             public void onClick(View v) {
                 if (gpuboost.isChecked()) {
-                	ExecuteRoot("echo '2' > /sys/devices/system/cpu/cpufreq/user/boost");
-	                ExecuteRoot("chmod 755 /sys/devices/system/cpu/cpufreq/user/boost");
+                	ExecuteRoot("echo '2' > /sys/devices/system/cpu/cpufreq/gpufreq/policy");
+	                ExecuteRoot("chmod 755 /sys/devices/system/cpu/cpufreq/gpufreq/policy");
 	                Toast.makeText(ATMain.this, getString(R.string.gpuboost_unlocked), Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "Warning: Maximum GPU freq unlocked!");
                     gpuboost_state = true;
@@ -271,6 +375,16 @@ public class ATMain extends Activity {
     	moveTaskToBack(true);
     	System.runFinalizersOnExit(true);
     	finishAffinity();
+    	cur_cpu_thread.interrupt();
+        try {
+            cur_cpu_thread.join();
+        } catch (InterruptedException e) {
+        }
+        cur_gpu_thread.interrupt();
+        try {
+            cur_gpu_thread.join();
+        } catch (InterruptedException e) {
+        }
     }
 
 	@Override
@@ -297,15 +411,20 @@ public class ATMain extends Activity {
                 intent2.setData(Uri.parse("http://github.com/SharkAndroid/Ainol_Toolkit"));
                 startActivity(intent2);
                 return true;
-            case R.id.changelog:
-                DialogFragment df1 = new ChangelogFragment();
+            case R.id.advices:
+            	DialogFragment df1 = new AdvicesFragment();
                 df1.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
-                df1.show(getFragmentManager(), "changelog");
+                df1.show(getFragmentManager(), "advices");
+                return true;
+            case R.id.changelog:
+                DialogFragment df2 = new ChangelogFragment();
+                df2.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+                df2.show(getFragmentManager(), "changelog");
                 return true;
             case R.id.about:
-            	DialogFragment df2 = new AboutFragment();
-                df2.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
-                df2.show(getFragmentManager(), "about");
+            	DialogFragment df3 = new AboutFragment();
+                df3.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+                df3.show(getFragmentManager(), "about");
                 return true;
 
             default:
@@ -400,4 +519,30 @@ public class ATMain extends Activity {
 	            outs.write(buffer, 0, read);
 	      }
 	}
+	
+	public static boolean fileExists(String filename) {
+        return new File(filename).exists();
+    }
+	
+	public String fileReadOneLine(String fname) {
+        BufferedReader br;
+        String line = null;
+
+        try {
+            br = new BufferedReader(new FileReader(fname), 512);
+            try {
+                line = br.readLine();
+            } finally {
+                br.close();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "IO Exception when reading /sys/ file", e);
+        }
+        return line;
+    }
+	
+	public String toMHz(String mhzString) {
+        return new StringBuilder().append(Integer.valueOf(mhzString) / 1000).append(" MHz")
+                .toString();
+    }
 }
