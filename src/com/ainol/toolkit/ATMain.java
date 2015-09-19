@@ -46,6 +46,7 @@ public class ATMain extends Activity {
     private TextView cur_gpu_freq;
     final String cpu_freq_file = "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq";
     final String gpu_freq_file = "/sys/devices/system/cpu/cpufreq/gpufreq/gpu3dfreq";
+    final String ram_file = "/proc/meminfo";
     private CurCPUThread cur_cpu_thread = new CurCPUThread();
     private CurGPUThread cur_gpu_thread = new CurGPUThread();
     boolean cpuboost_state;
@@ -55,13 +56,13 @@ public class ATMain extends Activity {
 
     private Handler cur_cpu_hand = new Handler() {
         public void handleMessage(Message msg) {
-            cur_cpu_freq.setText(toMHz((String) msg.obj));
+            cur_cpu_freq.setText(toMHzCPU((String) msg.obj));
         }
     };
     
     private Handler cur_gpu_hand = new Handler() {
     	public void handleMessage(Message msg) {
-    		cur_gpu_freq.setText(toMHz((String) msg.obj));
+    		cur_gpu_freq.setText(toMHzGPU((String) msg.obj));
     	}
     };
     
@@ -159,12 +160,12 @@ public class ATMain extends Activity {
         if (!fileExists(cpu_freq_file) || (cpu_freq_line = fileReadOneLine(cpu_freq_file)) == null) {
         	cur_cpu_freq.setText(getString(R.string.cur_cpu_freq));
         } else {
-        	cur_cpu_freq.setText(toMHz(cpu_freq_line));
+        	cur_cpu_freq.setText(toMHzCPU(cpu_freq_line));
             cur_cpu_thread.start();
             cpu_freq = cpu_freq_line.split(" ");
             cpu_frequencies = new String[cpu_freq.length];
             for (int i = 0; i < cpu_frequencies.length; i++) {
-                cpu_frequencies[i] = toMHz(cpu_freq[i]);
+                cpu_frequencies[i] = toMHzCPU(cpu_freq[i]);
             }
         }
 
@@ -172,12 +173,12 @@ public class ATMain extends Activity {
         if (!fileExists(gpu_freq_file) || (gpu_freq_line = fileReadOneLine(gpu_freq_file)) == null) {
         	cur_gpu_freq.setText(getString(R.string.cur_gpu_freq));
         } else {
-        	cur_gpu_freq.setText(toMHz(gpu_freq_line));
+        	cur_gpu_freq.setText(toMHzGPU(gpu_freq_line));
             cur_gpu_thread.start();
             gpu_freq = gpu_freq_line.split(" ");
             gpu_frequencies = new String[gpu_freq.length];
             for (int i = 0; i < gpu_frequencies.length; i++) {
-                gpu_frequencies[i] = toMHz(gpu_freq[i]);
+                gpu_frequencies[i] = toMHzGPU(gpu_freq[i]);
             }
         }
         
@@ -227,15 +228,16 @@ public class ATMain extends Activity {
         	@Override
             public void onClick(View v) {
                 if (cpuboost.isChecked()) {
+                	ExecuteRoot("chmod 644 /sys/devices/system/cpu/cpufreq/user/boost");
                 	ExecuteRoot("echo '1' > /sys/devices/system/cpu/cpufreq/user/boost");
-                    ExecuteRoot("chmod 755 /sys/devices/system/cpu/cpufreq/user/boost");
+                    ExecuteRoot("chmod 444 /sys/devices/system/cpu/cpufreq/user/boost");
                     Toast.makeText(ATMain.this, getString(R.string.cpuboost_unlocked), Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "Warning: Maximum CPU freq unlocked!");
                     cpuboost_state = true;
                 } else {
-                	ExecuteRoot("chmod 666 /sys/devices/system/cpu/cpufreq/user/boost");
+                	ExecuteRoot("chmod 644 /sys/devices/system/cpu/cpufreq/user/boost");
                     ExecuteRoot("echo '0' > /sys/devices/system/cpu/cpufreq/user/boost");
-                    ExecuteRoot("chmod 777 /sys/devices/system/cpu/cpufreq/user/boost");
+                    ExecuteRoot("chmod 444 /sys/devices/system/cpu/cpufreq/user/boost");
                     Toast.makeText(ATMain.this, getString(R.string.cpuboost_locked), Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "Warning: Maximum CPU freq locked!");
                     cpuboost_state = false;
@@ -250,15 +252,16 @@ public class ATMain extends Activity {
         	@Override
             public void onClick(View v) {
                 if (gpuboost.isChecked()) {
+                	ExecuteRoot("chmod 644 /sys/devices/system/cpu/cpufreq/gpufreq/policy");
                 	ExecuteRoot("echo '2' > /sys/devices/system/cpu/cpufreq/gpufreq/policy");
-	                ExecuteRoot("chmod 755 /sys/devices/system/cpu/cpufreq/gpufreq/policy");
+	                ExecuteRoot("chmod 444 /sys/devices/system/cpu/cpufreq/gpufreq/policy");
 	                Toast.makeText(ATMain.this, getString(R.string.gpuboost_unlocked), Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "Warning: Maximum GPU freq unlocked!");
                     gpuboost_state = true;
                 } else {
-                	ExecuteRoot("chmod 666 /sys/devices/system/cpu/cpufreq/gpufreq/policy");
+                	ExecuteRoot("chmod 644 /sys/devices/system/cpu/cpufreq/gpufreq/policy");
 	                ExecuteRoot("echo '0' > /sys/devices/system/cpu/cpufreq/gpufreq/policy");
-	                ExecuteRoot("chmod 777 /sys/devices/system/cpu/cpufreq/gpufreq/policy");
+	                ExecuteRoot("chmod 444 /sys/devices/system/cpu/cpufreq/gpufreq/policy");
 	                Toast.makeText(ATMain.this, getString(R.string.gpuboost_locked), Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "Warning: Maximum GPU freq locked!");
                     gpuboost_state = false;
@@ -277,66 +280,90 @@ public class ATMain extends Activity {
 			    OutputStream outs = null;
 				if (freezes.isChecked()) {
 					String fixfile = null;
+					boolean fixinst = false;
 					String pdevice = getProp("ro.product.device");
 					if (pdevice.trim().equals("hero2v2")) {
 						fixfile = "freezes_fix_hero2v2.zip";
+						fixinst = true;
 					}
 					else if (pdevice.trim().equals("hero2v1")) {
 						fixfile = "freezes_fix_hero2v1.zip";
+						fixinst = true;
 					}
 					else if (pdevice.trim().equals("venus")) {
 						fixfile = "freezes_fix_venus.zip";
+						fixinst = true;
 					}
 					else if (pdevice.trim().equals("captain")) {
 						fixfile = "freezes_fix_captain.zip";
+						fixinst = true;
 					}
-					try {
-						ins = am.open(fixfile);
-			            outs = new FileOutputStream(Environment.getExternalStorageDirectory().toString() + "/" + fixfile);
-			            copyFile(ins, outs);
-			            ins.close();
-			            ins = null;
-			            outs.flush();
-			            outs.close();
-			            outs = null;
+					else {
+						Toast.makeText(ATMain.this, getString(R.string.need_fw), Toast.LENGTH_SHORT).show();
+						fixinst = false;
 					}
-					catch(IOException e) {
-						Log.d(TAG, "Failed to copy  " + fixfile + "to " + outs, e);
-				    }
-		            Toast.makeText(ATMain.this, getString(R.string.function_enabled), Toast.LENGTH_SHORT).show();
-		            Log.d(TAG, "Warning: Freeze function enabled!");
-		            freezes_state = true;  
+					if (fixinst == true) {
+						try {
+							ins = am.open(fixfile);
+				            outs = new FileOutputStream(Environment.getExternalStorageDirectory().toString() + "/" + fixfile);
+				            copyFile(ins, outs);
+				            ins.close();
+				            ins = null;
+				            outs.flush();
+				            outs.close();
+				            outs = null;
+						}
+						catch (IOException e) {
+							Log.d(TAG, "Failed to copy  " + fixfile + "to " + outs, e);
+					    }
+						FreezeFuncDialog();
+						Toast.makeText(ATMain.this, getString(R.string.function_enabled), Toast.LENGTH_SHORT).show();
+			            Log.d(TAG, "Warning: Freeze function enabled!");
+			            freezes_state = true;
+					}
 		        } else {
 		        	String unfixfile = null;
+		        	boolean unfixinst = false;
 		        	String pdevice = getProp("ro.product.device");
 					if (pdevice.trim().equals("hero2v2")) {
 						unfixfile = "freezes_unfix_hero2v2.zip";
+						unfixinst = true;
 					}
 					else if (pdevice.trim().equals("hero2v1")) {
 						unfixfile = "freezes_unfix_hero2v1.zip";
+						unfixinst = true;
 					}
 					else if (pdevice.trim().equals("venus")) {
 						unfixfile = "freezes_unfix_venus.zip";
+						unfixinst = true;
 					}
 					else if (pdevice.trim().equals("captain")) {
 						unfixfile = "freezes_unfix_captain.zip";
+						unfixinst = true;
 					}
-					try {
-						ins = am.open(unfixfile);
-			            outs = new FileOutputStream(Environment.getExternalStorageDirectory().toString() + "/" + unfixfile);
-			            copyFile(ins, outs);
-			            ins.close();
-			            ins = null;
-			            outs.flush();
-			            outs.close();
-			            outs = null;
+					else {
+						Toast.makeText(ATMain.this, getString(R.string.need_fw), Toast.LENGTH_SHORT).show();
+						unfixinst = false;
 					}
-					catch(IOException e) {
-						Log.d(TAG, "Failed to copy  " + unfixfile + "to " + outs, e);
-				    }
-		            Toast.makeText(ATMain.this, getString(R.string.function_disabled), Toast.LENGTH_SHORT).show();
-		            Log.d(TAG, "Warning: Freeze function disabled!");
-		            freezes_state = false;
+					if (unfixinst == true) {
+						try {
+							ins = am.open(unfixfile);
+				            outs = new FileOutputStream(Environment.getExternalStorageDirectory().toString() + "/" + unfixfile);
+				            copyFile(ins, outs);
+				            ins.close();
+				            ins = null;
+				            outs.flush();
+				            outs.close();
+				            outs = null;
+						}
+						catch (IOException e) {
+							Log.d(TAG, "Failed to copy  " + unfixfile + "to " + outs, e);
+					    }
+						FreezeFuncDialog();
+						Toast.makeText(ATMain.this, getString(R.string.function_disabled), Toast.LENGTH_SHORT).show();
+			            Log.d(TAG, "Warning: Freeze function disabled!");
+			            freezes_state = false;
+					}
 		        }
 		        SharedPreferences.Editor editor = getSharedPreferences(SETTINGS_KEY, MODE_PRIVATE).edit();
 		        editor.putBoolean("freezes_state", freezes_state);
@@ -348,15 +375,16 @@ public class ATMain extends Activity {
 			@Override
 			public void onClick(View v) {
 				if (colorfix.isChecked()) {
+					ExecuteRoot("chmod 644 /sys/devices/system/cpu/cpufreq/interactive/boost");
 		        	ExecuteRoot("echo '1' > /sys/devices/system/cpu/cpufreq/interactive/boost");
-		            ExecuteRoot("chmod 755 /sys/devices/system/cpu/cpufreq/interactive/boost");
+		            ExecuteRoot("chmod 444 /sys/devices/system/cpu/cpufreq/interactive/boost");
 		            Toast.makeText(ATMain.this, getString(R.string.function_enabled), Toast.LENGTH_SHORT).show();
 		            Log.d(TAG, "Warning: Colorfix function enabled!");
 		            colorfix_state = true;
 		        } else {
-		        	ExecuteRoot("chmod 666 /sys/devices/system/cpu/cpufreq/interactive/boost");
+		        	ExecuteRoot("chmod 644 /sys/devices/system/cpu/cpufreq/interactive/boost");
 		            ExecuteRoot("echo '0' > /sys/devices/system/cpu/cpufreq/interactive/boost");
-		            ExecuteRoot("chmod 777 /sys/devices/system/cpu/cpufreq/interactive/boost");
+		            ExecuteRoot("chmod 444 /sys/devices/system/cpu/cpufreq/interactive/boost");
 		            Toast.makeText(ATMain.this, getString(R.string.function_disabled), Toast.LENGTH_SHORT).show();
 		            Log.d(TAG, "Warning: Colorfix function disabled!");
 		            colorfix_state = false;
@@ -432,11 +460,12 @@ public class ATMain extends Activity {
         }
     }
 
-    public void AboutSystem() {
+    private void AboutSystem() {
     	/* Device info */
+    	String platform = "gs702a";
     	String cpu = "Actions ATM7029";
     	String gpu = "Vivante GC1000+MP";
-    	String platform = "gs702a";
+    	String ram = getRAM();
 
     	/* Android info */
     	String android = getProp("ro.build.version.release");
@@ -461,10 +490,24 @@ public class ATMain extends Activity {
         		+ getString(R.string.build_date) + "   " + date + "\n\n"
         		+ getString(R.string.platform) + "   " + platform + "\n\n"
         		+ getString(R.string.cpu) + "   " + cpu + "\n\n"
-        		+ getString(R.string.gpu) + "   " + gpu + "\n";
+        		+ getString(R.string.gpu) + "   " + gpu + "\n\n"
+        		+ getString(R.string.ram) + "   " + ram + " DDR3" + "\n";
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
         .setTitle(R.string.as_title)
+        .setMessage(message)
+        .setNeutralButton(R.string.ok, null);
+
+		AlertDialog dialog = builder.create();
+		dialog.show();
+    }
+    
+    private void FreezeFuncDialog() {
+    	/* Message text */
+        String message = getString(R.string.advices_text);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+        .setTitle(R.string.freezes)
         .setMessage(message)
         .setNeutralButton(R.string.ok, null);
 
@@ -511,8 +554,8 @@ public class ATMain extends Activity {
         }
     }
 	
-	// Copy file from asset to misc
-	public void copyFile(InputStream ins, OutputStream outs) throws IOException {
+	// Copy file from asset to sdcard
+	private void copyFile(InputStream ins, OutputStream outs) throws IOException {
 	      byte[] buffer = new byte[1024];
 	      int read;
 	      while((read = ins.read(buffer)) != -1) {
@@ -520,11 +563,13 @@ public class ATMain extends Activity {
 	      }
 	}
 	
-	public static boolean fileExists(String filename) {
+	// Checking if file exists
+	private static boolean fileExists(String filename) {
         return new File(filename).exists();
     }
 	
-	public String fileReadOneLine(String fname) {
+	// Read line in the file
+	private String fileReadOneLine(String fname) {
         BufferedReader br;
         String line = null;
 
@@ -536,13 +581,38 @@ public class ATMain extends Activity {
                 br.close();
             }
         } catch (Exception e) {
-            Log.e(TAG, "IO Exception when reading /sys/ file", e);
+            Log.e(TAG, "Exception when reading /sys/* file", e);
         }
         return line;
     }
 	
-	public String toMHz(String mhzString) {
+	// String for CPU freq.
+	private String toMHzCPU(String mhzString) {
         return new StringBuilder().append(Integer.valueOf(mhzString) / 1000).append(" MHz")
                 .toString();
+    }
+	
+	// String for GPU freq.
+		private String toMHzGPU(String mhzString) {
+	        return new StringBuilder().append(Integer.valueOf(mhzString) / 1000000).append(" MHz")
+	                .toString();
+	    }
+	
+	// Reading a ram file(/proc/meminfo)
+	private String getRAM() {
+        String result = null;
+        try {
+            String firstLine = fileReadOneLine(ram_file);
+            if (firstLine != null) {
+                String parts[] = firstLine.split("\\s+");
+                if (parts.length == 3) {
+                    result = Long.parseLong(parts[1])/1024 + " MB";
+                }
+            }
+        } catch (Exception e) {
+        	Log.e(TAG, "Exception when reading " + ram_file + ", e");
+        }
+
+        return result;
     }
 }

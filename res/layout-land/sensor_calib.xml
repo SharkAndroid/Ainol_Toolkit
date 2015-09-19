@@ -60,7 +60,7 @@
         android:layout_alignBottom="@+id/text_gsensor"
         android:layout_alignLeft="@+id/tips"
         android:gravity="left|center"
-        android:text="@string/gsensor_driver"
+        android:text="@string/gsensor_module"
         android:textColor="#4b0082"
         android:textSize="20.0sp"
         android:textStyle="bold"

@@ -15,7 +15,7 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ainol.toolkit"
-    android:versionCode="20150826"
+    android:versionCode="20150919"
     android:versionName="@string/app_version">
     
     <uses-sdk
