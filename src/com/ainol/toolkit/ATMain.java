@@ -38,34 +38,44 @@ import com.stericson.RootTools.execution.*;
 public class ATMain extends Activity {
 	final String TAG = "ATMain";
     final String SETTINGS_KEY = "settings";
-    private ToggleButton cpuboost;
-    private ToggleButton gpuboost;
-    private ToggleButton freezes;
-    private ToggleButton colorfix;
-    private TextView cur_cpu_freq;
-    private TextView cur_gpu_freq;
     final String cpu_freq_file = "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq";
     final String gpu_freq_file = "/sys/devices/system/cpu/cpufreq/gpufreq/gpu3dfreq";
+    // Use only /dev/block/actj(sdcard) read_ahead_kb,because default for all blocks is 128 kb/s.
+    final String memory_speed_file = "/sys/devices/virtual/bdi/93:72/read_ahead_kb";
     final String ram_file = "/proc/meminfo";
-    private CurCPUThread cur_cpu_thread = new CurCPUThread();
-    private CurGPUThread cur_gpu_thread = new CurGPUThread();
+    private CurCPUThread cpu_thread = new CurCPUThread();
+    private CurGPUThread gpu_thread = new CurGPUThread();
+    private CurMSThread ms_thread = new CurMSThread();
+    ToggleButton cpuboost;
+    ToggleButton gpuboost;
+    ToggleButton freezes;
+    ToggleButton colorfix;
+    TextView cpu_freq_value;
+    TextView gpu_freq_value;
+    TextView ms_value;
     boolean cpuboost_state;
     boolean gpuboost_state;
     boolean freezes_state;
     boolean colorfix_state;
 
-    private Handler cur_cpu_hand = new Handler() {
+    private Handler cpu_hand = new Handler() {
         public void handleMessage(Message msg) {
-            cur_cpu_freq.setText(toMHzCPU((String) msg.obj));
+            cpu_freq_value.setText(toMHzCPU((String) msg.obj));
         }
     };
-    
-    private Handler cur_gpu_hand = new Handler() {
+
+    private Handler gpu_hand = new Handler() {
     	public void handleMessage(Message msg) {
-    		cur_gpu_freq.setText(toMHzGPU((String) msg.obj));
+    		gpu_freq_value.setText(toMHzGPU((String) msg.obj));
     	}
     };
-    
+
+    private Handler ms_hand = new Handler() {
+    	public void handleMessage(Message msg) {
+    		ms_value.setText(toKbs((String) msg.obj));
+    	}
+    };
+
     private class CurCPUThread extends Thread {
         private boolean interrupt = false;
 
@@ -78,9 +88,9 @@ public class ATMain extends Activity {
             try {
                 while (!interrupt) {
                     sleep(500);
-                    final String curFreq = fileReadOneLine(cpu_freq_file);
-                    if (curFreq != null)
-                        cur_cpu_hand.sendMessage(cur_cpu_hand.obtainMessage(0, curFreq));
+                    final String Freq = fileReadOneLine(cpu_freq_file);
+                    if (Freq != null)
+                        cpu_hand.sendMessage(cpu_hand.obtainMessage(0, Freq));
                 }
             } catch (InterruptedException e) {
             }
@@ -99,9 +109,30 @@ public class ATMain extends Activity {
             try {
                 while (!interrupt) {
                     sleep(500);
-                    final String curFreq = fileReadOneLine(gpu_freq_file);
-                    if (curFreq != null)
-                        cur_gpu_hand.sendMessage(cur_gpu_hand.obtainMessage(0, curFreq));
+                    final String Freq = fileReadOneLine(gpu_freq_file);
+                    if (Freq != null)
+                        gpu_hand.sendMessage(gpu_hand.obtainMessage(0, Freq));
+                }
+            } catch (InterruptedException e) {
+            }
+        }
+    };
+    
+    private class CurMSThread extends Thread {
+        private boolean interrupt = false;
+
+        public void interrupt() {
+            interrupt = true;
+        }
+
+        @Override
+        public void run() {
+            try {
+                while (!interrupt) {
+                    sleep(500);
+                    final String Speed = fileReadOneLine(memory_speed_file);
+                    if (Speed != null)
+                        ms_hand.sendMessage(ms_hand.obtainMessage(0, Speed));
                 }
             } catch (InterruptedException e) {
             }
@@ -147,49 +178,67 @@ public class ATMain extends Activity {
 		gpuboost = (ToggleButton) findViewById(R.id.gpuboost_btn);
         freezes = (ToggleButton) findViewById(R.id.freezes_btn);
         colorfix = (ToggleButton) findViewById(R.id.colorfix_btn);
-        cur_cpu_freq = (TextView) findViewById(R.id.cur_cpu_freq);
-        cur_gpu_freq = (TextView) findViewById(R.id.cur_gpu_freq);
-        String[] cpu_freq = new String[0];
+        cpu_freq_value = (TextView) findViewById(R.id.cpu_freq_value);
+        gpu_freq_value = (TextView) findViewById(R.id.gpu_freq_value);
+        ms_value = (TextView) findViewById(R.id.ms_value);
+        String[] c_freq = new String[0];
         String cpu_freq_line;
         String[] cpu_frequencies;
-        String[] gpu_freq = new String[0];
+        String[] g_freq = new String[0];
         String gpu_freq_line;
         String[] gpu_frequencies;
+        String[] m_s = new String[0];
+        String ms_line;
+        String[] memory_speed;
         
         // Change current cpu freq text if we dont have a list file
         if (!fileExists(cpu_freq_file) || (cpu_freq_line = fileReadOneLine(cpu_freq_file)) == null) {
-        	cur_cpu_freq.setText(getString(R.string.cur_cpu_freq));
+        	cpu_freq_value.setText(getString(R.string.cpu_freq_value));
         } else {
-        	cur_cpu_freq.setText(toMHzCPU(cpu_freq_line));
-            cur_cpu_thread.start();
-            cpu_freq = cpu_freq_line.split(" ");
-            cpu_frequencies = new String[cpu_freq.length];
+        	cpu_freq_value.setText(toMHzCPU(cpu_freq_line));
+            cpu_thread.start();
+            c_freq = cpu_freq_line.split(" ");
+            cpu_frequencies = new String[c_freq.length];
             for (int i = 0; i < cpu_frequencies.length; i++) {
-                cpu_frequencies[i] = toMHzCPU(cpu_freq[i]);
+                cpu_frequencies[i] = toMHzCPU(c_freq[i]);
             }
         }
 
         // Change current gpu freq text if we dont have a list file
         if (!fileExists(gpu_freq_file) || (gpu_freq_line = fileReadOneLine(gpu_freq_file)) == null) {
-        	cur_gpu_freq.setText(getString(R.string.cur_gpu_freq));
+        	gpu_freq_value.setText(getString(R.string.gpu_freq_value));
         } else {
-        	cur_gpu_freq.setText(toMHzGPU(gpu_freq_line));
-            cur_gpu_thread.start();
-            gpu_freq = gpu_freq_line.split(" ");
-            gpu_frequencies = new String[gpu_freq.length];
+        	gpu_freq_value.setText(toMHzGPU(gpu_freq_line));
+            gpu_thread.start();
+            g_freq = gpu_freq_line.split(" ");
+            gpu_frequencies = new String[g_freq.length];
             for (int i = 0; i < gpu_frequencies.length; i++) {
-                gpu_frequencies[i] = toMHzGPU(gpu_freq[i]);
+                gpu_frequencies[i] = toMHzGPU(g_freq[i]);
             }
         }
         
+        // Change current memory speed text if we dont have a list file
+        if (!fileExists(memory_speed_file) || (ms_line = fileReadOneLine(memory_speed_file)) == null) {
+        	ms_value.setText(getString(R.string.ms_value));
+        } else {
+        	ms_value.setText(toKbs(ms_line));
+            ms_thread.start();
+            m_s = ms_line.split(" ");
+            memory_speed = new String[m_s.length];
+            for (int i = 0; i < memory_speed.length; i++) {
+                memory_speed[i] = toKbs(m_s[i]);
+            }
+        }
+
         SharedPreferences sharedPrefs = getSharedPreferences(SETTINGS_KEY, MODE_PRIVATE);
         cpuboost.setChecked(sharedPrefs.getBoolean("cpuboost_state", false));
         gpuboost.setChecked(sharedPrefs.getBoolean("gpuboost_state", false));
         freezes.setChecked(sharedPrefs.getBoolean("freezes_state", false));
         colorfix.setChecked(sharedPrefs.getBoolean("colorfix_state", false));
 
-        if (!RootTools.isAccessGiven()) { 
-        	showWarningDialog(getString(R.string.no_root), new DialogInterface.OnClickListener() {
+        String bplatform = getProp("ro.board.platform");
+        if (bplatform == null || !bplatform.trim().equals("ATM702X")) {
+            showWarningDialog(getString(R.string.unsupport_device, bplatform), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     finish();
@@ -197,9 +246,8 @@ public class ATMain extends Activity {
             });
         }
 
-        String bplatform = getProp("ro.board.platform");
-        if (bplatform == null || !bplatform.trim().equals("ATM702X")) {
-            showWarningDialog(getString(R.string.unsupport_device, bplatform), new DialogInterface.OnClickListener() {
+        if (!RootTools.isAccessGiven()) { 
+        	showWarningDialog(getString(R.string.no_root), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     finish();
@@ -370,30 +418,6 @@ public class ATMain extends Activity {
 		        editor.commit();
 			}
         });
-        
-        colorfix.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (colorfix.isChecked()) {
-					ExecuteRoot("chmod 644 /sys/devices/system/cpu/cpufreq/interactive/boost");
-		        	ExecuteRoot("echo '1' > /sys/devices/system/cpu/cpufreq/interactive/boost");
-		            ExecuteRoot("chmod 444 /sys/devices/system/cpu/cpufreq/interactive/boost");
-		            Toast.makeText(ATMain.this, getString(R.string.function_enabled), Toast.LENGTH_SHORT).show();
-		            Log.d(TAG, "Warning: Colorfix function enabled!");
-		            colorfix_state = true;
-		        } else {
-		        	ExecuteRoot("chmod 644 /sys/devices/system/cpu/cpufreq/interactive/boost");
-		            ExecuteRoot("echo '0' > /sys/devices/system/cpu/cpufreq/interactive/boost");
-		            ExecuteRoot("chmod 444 /sys/devices/system/cpu/cpufreq/interactive/boost");
-		            Toast.makeText(ATMain.this, getString(R.string.function_disabled), Toast.LENGTH_SHORT).show();
-		            Log.d(TAG, "Warning: Colorfix function disabled!");
-		            colorfix_state = false;
-		        }
-		        SharedPreferences.Editor editor = getSharedPreferences(SETTINGS_KEY, MODE_PRIVATE).edit();
-		        editor.putBoolean("colorfix_state", colorfix_state);
-		        editor.commit();
-			}
-        });
 	}
 
 	@Override
@@ -403,14 +427,19 @@ public class ATMain extends Activity {
     	moveTaskToBack(true);
     	System.runFinalizersOnExit(true);
     	finishAffinity();
-    	cur_cpu_thread.interrupt();
+    	cpu_thread.interrupt();
         try {
-            cur_cpu_thread.join();
+            cpu_thread.join();
         } catch (InterruptedException e) {
         }
-        cur_gpu_thread.interrupt();
+        gpu_thread.interrupt();
         try {
-            cur_gpu_thread.join();
+            gpu_thread.join();
+        } catch (InterruptedException e) {
+        }
+        ms_thread.interrupt();
+        try {
+            ms_thread.join();
         } catch (InterruptedException e) {
         }
     }
@@ -463,7 +492,7 @@ public class ATMain extends Activity {
     private void AboutSystem() {
     	/* Device info */
     	String platform = "gs702a";
-    	String cpu = "Actions ATM7029";
+    	String cpu = "Actions ATM7029/ATM7025";
     	String gpu = "Vivante GC1000+MP";
     	String ram = getRAM();
 
@@ -593,11 +622,17 @@ public class ATMain extends Activity {
     }
 	
 	// String for GPU freq.
-		private String toMHzGPU(String mhzString) {
-	        return new StringBuilder().append(Integer.valueOf(mhzString) / 1000000).append(" MHz")
-	                .toString();
-	    }
-	
+    private String toMHzGPU(String mhzString) {
+        return new StringBuilder().append(Integer.valueOf(mhzString) / 1000000).append(" MHz")
+                .toString();
+    }
+    
+    // String for Memory Speed.
+    private String toKbs(String kbsString) {
+        return new StringBuilder().append(Integer.valueOf(kbsString) / 1).append(" Kb/s")
+                .toString();
+    }
+
 	// Reading a ram file(/proc/meminfo)
 	private String getRAM() {
         String result = null;
