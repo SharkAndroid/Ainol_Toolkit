@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2015, SharkAndroid
+     Copyright (C) 2016, SharkAndroid
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -154,70 +154,6 @@
         android:textColor="#4b0082" />
 
     <TextView
-        android:id="@+id/gpu_freq_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/gpuboost"
-        android:layout_alignBottom="@+id/gpuboost"
-        android:layout_alignLeft="@+id/ms_text"
-        android:text="@string/gpu_freq_text"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#4b0082" />
-
-    <Button
-        android:id="@+id/sensor_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/gpuboost"
-        android:layout_marginLeft="97dp"
-        android:layout_toRightOf="@+id/gpuboost"
-        android:text="@string/sensor_title"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#4b0082" />
-
-    <Button
-        android:id="@+id/as_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/freezes"
-        android:layout_alignLeft="@+id/sensor_button"
-        android:text="@string/as_title"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#4b0082" />
-
-    <TextView
-        android:id="@+id/gpu_freq_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/as_button"
-        android:layout_alignBottom="@+id/as_button"
-        android:layout_alignLeft="@+id/cpu_freq_text"
-        android:text="@string/gpu_freq_value"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#4b0082" />
-
-    <TextView
-        android:id="@+id/cpu_freq_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/sensor_button"
-        android:layout_alignLeft="@+id/cpu_freq_value"
-        android:text="@string/cpu_freq_text"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#4b0082" />
-
-    <TextView
-        android:id="@+id/cpu_freq_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/cpuboost_btn"
-        android:layout_alignBottom="@+id/cpuboost_btn"
-        android:layout_alignLeft="@+id/gpu_freq_text"
-        android:text="@string/cpu_freq_value"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#4b0082" />
-
-    <TextView
         android:id="@+id/ms_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -229,14 +165,89 @@
         android:textColor="#4b0082" />
 
     <TextView
+        android:id="@+id/gpu_freq_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/gpuboost_btn"
+        android:layout_alignBottom="@+id/gpuboost_btn"
+        android:layout_alignLeft="@+id/gpu_freq_text"
+        android:text="@string/gpu_freq_value"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#4b0082" />
+
+    <Button
+        android:id="@+id/as_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/freezes_text"
+        android:layout_alignLeft="@+id/sensor_button"
+        android:text="@string/as_title"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#4b0082" />
+
+    <TextView
+        android:id="@+id/cpu_freq_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/cpuboost_btn"
+        android:layout_alignBottom="@+id/cpuboost_btn"
+        android:layout_alignLeft="@+id/cpu_freq_text"
+        android:text="@string/cpu_freq_value"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#4b0082" />
+
+    <TextView
         android:id="@+id/ms_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/freezes"
         android:layout_alignBottom="@+id/freezes"
-        android:layout_marginLeft="32dp"
+        android:layout_marginLeft="155dp"
         android:layout_toRightOf="@+id/settings"
         android:text="@string/ms_text"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#4b0082" />
+
+    <TextView
+        android:id="@+id/gpu_freq_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/sensor_button"
+        android:layout_alignLeft="@+id/ms_text"
+        android:text="@string/gpu_freq_text"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#4b0082" />
+
+    <TextView
+        android:id="@+id/cpu_freq_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/cpuboost"
+        android:layout_alignBottom="@+id/cpuboost"
+        android:layout_alignLeft="@+id/gpu_freq_text"
+        android:text="@string/cpu_freq_text"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#4b0082" />
+
+    <Button
+        android:id="@+id/sensor_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/freezes"
+        android:layout_alignRight="@+id/settings"
+        android:layout_marginRight="60dp"
+        android:text="@string/sensor_title"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#4b0082" />
+
+    <Button
+        android:id="@+id/rec_install"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/gpuboost"
+        android:layout_alignLeft="@+id/sensor_button"
+        android:layout_alignRight="@+id/settings"
+        android:text="@string/rec_installer"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#4b0082" />
 

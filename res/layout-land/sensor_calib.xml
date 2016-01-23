@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2015, SharkAndroid
+     Copyright (C) 2016, SharkAndroid
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" 
     android:layout_width="match_parent" 
-	android:layout_height="match_parent"
+    android:layout_height="match_parent"
     android:background="#c0c0c0">
 
     <TextView
@@ -27,7 +27,7 @@
         android:layout_marginBottom="10.0sp"
         android:layout_marginLeft="10.0sp"
         android:layout_marginTop="10.0sp"
-        android:text="@string/tips"
+        android:text="@string/gsensor_info"
         android:textColor="#4b0082"
         android:textSize="20.0sp" />
 
@@ -60,7 +60,7 @@
         android:layout_alignBottom="@+id/text_gsensor"
         android:layout_alignLeft="@+id/tips"
         android:gravity="left|center"
-        android:text="@string/gsensor_module"
+        android:text="@string/gsensor_driver"
         android:textColor="#4b0082"
         android:textSize="20.0sp"
         android:textStyle="bold"
