@@ -4,13 +4,16 @@ Actions_Tools
 
 Features:
 ==========
-* Unlocking CPU and GPU frequency(that locked on Stock Rom).
-* Calibrate Accelerometer.
-* Fix freezes at Ainol Captain(Rhino) on SharkAndroid firmware.
+* Unlocking CPU and GPU frequency(that locked on some roms).
+* Fix freezes.
+* Fix the color gamut.
+* Recovery installer.
+* About accelerometer,system.
+* CPU and GPU freq, memory speed indexes.
 
 Copyrights:
 ===========
-* Copyright (C) 2014 SharkAndroid.
+* Copyright (C) 2016, SharkAndroid.
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
@@ -20,7 +23,3 @@ Copyrights:
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
 * limitations under the License.
-
-TODO:
-=====
-* Fix Gravity Sensor Calibration function.
