@@ -34,7 +34,7 @@ public class SensorActivity extends Activity implements SensorEventListener {
     private TextView mTextGSensor;
     public SensorManager sm = null;
     public SensorHost mSensorHost;
-    
+
     public void findViews() {
         mTextCoord = (TextView) findViewById(R.id.text_coord);
         mTextGSensor = (TextView) findViewById(R.id.text_gsensor);
@@ -55,7 +55,7 @@ public class SensorActivity extends Activity implements SensorEventListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        
+
         mHandler = null;
         sm = null;
     }
@@ -94,13 +94,15 @@ public class SensorActivity extends Activity implements SensorEventListener {
         } else {
             model = ATMain.getProp("ro.product.model");
         }
-        
+
         /* GSensor name */
         String gstxt = null;
-        if (model.trim().equals("Novo 10 Hero II") || model.trim().equals("Novo 7 Venus")) {
+        if (model.trim().equals("Novo 10 Hero II") || model.trim().equals("Novo10 hero QuadCore")
+                || model.trim().equals("Novo 7 Venus") || model.trim().equals("Novo7 Venus")) {
             gstxt = "mc3210";
             mTextGSensor.setText(gstxt);
-        } else if (model.trim().equals("Novo 10 Captain")) {
+        } else if (model.trim().equals("Novo 10 Captain") || model.trim().equals("Novo10 captain QuadCore")
+                || model.trim().equals("Novo10 Eternal Quadcore")) {
             gstxt = "mma8452";
             mTextGSensor.setText(gstxt);
         } else {
@@ -108,11 +110,11 @@ public class SensorActivity extends Activity implements SensorEventListener {
             mTextGSensor.setText(gstxt);
         }
     }
-    
+
     public void onSensorChanged(SensorEvent se) {
         if ((se != null) && (se.values.length == 3)) {
             if (mTextCoord != null) {
-                String txt = String.format("X: %.3f, Y: %.3f, Z: %.3f",
+                String txt = String.format("X: %.3f; Y: %.3f; Z: %.3f.",
                         se.values[0], se.values[1], se.values[2]);
                 mTextCoord.setText(txt);
             }
