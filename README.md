@@ -7,8 +7,9 @@ Features:
 * Unlocking CPU and GPU frequency(that locked on some roms).
 * Fix freezes.
 * Fix the color gamut.
+* Recovery backup.
 * Recovery installer.
-* About accelerometer,system.
+* About modules,system.
 * CPU and GPU freq, memory speed indexes.
 
 Copyrights:

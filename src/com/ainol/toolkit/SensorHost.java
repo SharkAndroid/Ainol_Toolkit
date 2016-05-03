@@ -23,13 +23,13 @@ import android.util.*;
 import android.view.*;
 
 public class SensorHost extends View implements View.OnTouchListener {
-    final String TAG = "SensorHost";
-    float vX = 0.0F;
-    float vY = 0.0F;
-    float vZ = 0.0F;
-    Display mDisplay = null;
-    Paint mPaint = null;
-    RectF mOval = null;
+    private String TAG = "SensorHost";
+    private float vX = 0.0F;
+    private float vY = 0.0F;
+    private float vZ = 0.0F;
+    private Display mDisplay = null;
+    private Paint mPaint = null;
+    private RectF mOval = null;
 
     public SensorHost(Context ctx, AttributeSet attrs) {
         this(ctx, attrs, 0);
@@ -58,6 +58,7 @@ public class SensorHost extends View implements View.OnTouchListener {
     public void onDraw(Canvas c) {
         super.onDraw(c);
 
+        /* Get height,width,x,y,z. Paint and draw gsensor oval. */
         int w = getWidth();
         int h = getHeight();
 

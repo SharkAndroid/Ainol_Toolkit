@@ -23,7 +23,7 @@
     <string name="colorfix">Исправить цветовую гамму</string>
     <string name="crimg_title">Бэкап рекавери</string>
     <string name="recins_title">Установка рекавери</string>
-    <string name="sensor_title">О акселерометре</string>
+    <string name="modules_title">О модулях</string>
     <string name="as_title">О системе</string>
     <string name="cpu_freq_text">Частота ЦП:</string>
     <string name="gpu_freq_text">Частота ГП:</string>
@@ -44,8 +44,10 @@
     <!-- Texts -->
     <string name="unsupport_device">Данная программа только для устройств от Ainol,на которых установлен процессор Actions ATM7029.</string>
     <string name="no_root">Данному приложению нужны root-права.</string>
-    <string name="gsensor_info">Положите устройство на ровную поверхность.</string>
-    <string name="gsensor_driver">Драйвер:</string>
+    <string name="camera_module">Модуль камеры:</string>
+    <string name="touch_module">Модуль тач-скрина:</string>
+    <string name="gsensor_module">Модуль акселерометра:</string>
+    <string name="unknown_module">Неизвестно</string>
     <string name="cpuboost_unlocked">Частота CPU разблокирована.</string>
     <string name="cpuboost_locked">Частота CPU заблокирована.</string>
     <string name="gpuboost_unlocked">Частота GPU разблокирована.</string>
@@ -54,6 +56,7 @@
     <string name="function_disabled">Фукнция выключена.</string>
     <string name="wd_title">Внимание!</string>
     <string name="wd_text">Функции исправить зависания и цветовую гамму не требуют включения на всех устройствах.\nИх включение может привести к потере данных,окирпичеванию устройств.</string>
+    <string name="need_device">Данная функция только для устройств Hero 2(v2,v1),Venus и Captain.</string>
     <string name="need_fw">Чтобы использовать данную функцию вы должны использовать последнюю прошивку(Ainol SDK1224) или прошивки основанные на SDK1224!</string>
     <string name="crimg_install">Бэкап раздела рекавери успешно сделан в</string>
     <string name="rec_install">Рекавери успешно установлен.</string>
@@ -75,17 +78,24 @@
         1. Перезагрузите планшет в рекавери(Только TWRP или CWM).\n
         2. Установите freezes_fix_xxx.zip/freezes_unfix_xxx.zip и перезагрузите ваш планшет.\n\n
         Чтобы установить рекавери нужно:\n
-        1. Скопировать rec.img(фс fat16) в котором сток,twrp,cwm рекавери, в AT_Dir.\n
+        1. Скопировать rec.img(ФС fat16), в котором установлен: Сток,TWRP,CWM рекавери, в AT_Dir.\n
         2. Нажмите кнопку Установщик рекавери и после 30 сек. он будет установлен.\n</b>
     </string>
     <string name="about_text">
         <b><i>Ainol Toolkit\n
-        Мобильное приложение для девайсов от Ainol на базе процессора Actions ATM7029.\n\n\n
+        Мобильное приложение для устройств от Ainol на базе процессора Actions ATM7029.\n\n\n
         Автор: iBullRay.\n
-        Версия: 6.1.\n
+        Версия: 7.0.\n
         Авторское право © 2016, SharkAndroid.\n\n</i></b>
     </string>
     <string name="changelog_text">
+        <b>Версия 7.0</b>\n\n
+        * Раздел О акселерометре заменен на О модулях.\n
+        В нем находятся данные о модулях камеры,тача и акселерометра.\n
+        * Поиск модулей происходит независимо от модели устройства.\n
+        * Исправлены проблемы с UI.\n
+        * Оптимизирован код приложения.\n
+        * Обновлен перевод для локализации EN и RU.\n\n
         <b>Версия 6.1</b>\n\n
         * Добавлена функция бэкапа рекавери.\n
         * Добавлен индикатор состояния HDMI в О системе.\n

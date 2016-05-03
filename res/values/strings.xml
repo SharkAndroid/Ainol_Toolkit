@@ -17,7 +17,7 @@
     <!-- App -->
     <string name="app_name" translatable="false">Ainol Toolkit</string>
     <string name="app_copyright" translatable="false">Copyright © 2016, SharkAndroid</string>
-    <string name="app_version" translatable="false">v6.1</string>
+    <string name="app_version" translatable="false">v7.0</string>
     <!-- Progress bar -->
     <string name="settings">SETTING</string>
     <!-- Name of functions -->
@@ -27,7 +27,7 @@
     <string name="colorfix">Fix the color gamut</string>
     <string name="crimg_title">Backup recovery</string>
     <string name="recins_title">Install recovery</string>
-    <string name="sensor_title">About gsensor</string>
+    <string name="modules_title">About modules</string>
     <string name="as_title">About system</string>
     <string name="cpu_freq_text">CPU freq:</string>
     <string name="gpu_freq_text">GPU freq:</string>
@@ -49,8 +49,10 @@
     <!-- Texts -->
     <string name="unsupport_device">This program only for Ainol devices that have Actions ATM7029 processor.</string>
     <string name="no_root">This application requires root permisions.</string>
-    <string name="gsensor_info">Please put device on a level surface and stand still.</string>
-    <string name="gsensor_driver">Driver:</string>
+    <string name="camera_module">Camera module:</string>
+    <string name="touch_module">Touch module:</string>
+    <string name="gsensor_module">GSensor module:</string>
+    <string name="unknown_module">Unknown</string>
     <string name="cpuboost_unlocked">CPU freq unlocked.</string>
     <string name="cpuboost_locked">CPU freq locked.</string>
     <string name="gpuboost_unlocked">GPU freq unlocked.</string>
@@ -59,6 +61,7 @@
     <string name="function_disabled">Function disabled.</string>
     <string name="wd_title">Warning!</string>
     <string name="wd_text">Functions Fix freezes and color gamut dont require inclusion on all devices.\nTheir inclusion can cause data loss,bricking devices.</string>
+    <string name="need_device">This function is only for Hero 2(v2,v1),Venus and Captain devices.</string>
     <string name="need_fw">To use this function you need to use the latest firmware(Ainol SDK1224) or another fw based on SDK1224!</string>
     <string name="crimg_install">Backup recovery partition successfully made in</string>
     <string name="rec_install">Recovery successfully installed.</string>
@@ -80,17 +83,24 @@
         1. Reboot tablet into recovery mode(Only TWRP or CWM).\n
         2. Install freezes_fix_xxx.zip/freezes_unfix_xxx.zip and reboot your tablet.\n\n
         To install recovery you need:\n
-        1. Copy rec.img(fs fat16) in which is stock,twrp,cwm recovery, to AT_Dir.\n
-        2. Press Recovery installer button and after 30 sec he will be installed.\n.</b>
+        1. Copy rec.img(FS fat16) in which is installed Stock,TWRP,CWM recovery, to AT_Dir.\n
+        2. Press Recovery installer button and after 30 sec he will be installed.\n</b>
     </string>
     <string name="about_text">
         <b><i>Ainol Toolkit\n
         Mobile tool for Ainol devices that have Actions ATM7029 processor.\n\n\n
         Author: iBullRay.\n
-        Version: 6.1.\n
+        Version: 7.0.\n
         Copyright © 2016, SharkAndroid.\n\n</i></b>
     </string>
     <string name="changelog_text">
+        <b>Version 7.0</b>\n\n
+        * Partition About gsensor replaced with About modules.\n
+        It contains data of camera,touch and gsensor modules.\n
+        * Searching of modules is going independently from the device model.\n
+        * Fixed problems with UI.\n
+        * Optimized application code.\n
+        * Updated translation for EN and RU localization.\n\n
         <b>Version 6.1</b>\n\n
         * Added Recovery backup function.\n
         * Added HDMI mode index in About system.\n

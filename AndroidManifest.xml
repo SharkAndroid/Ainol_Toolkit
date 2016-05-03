@@ -15,7 +15,7 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ainol.toolkit"
-    android:versionCode="20160311"
+    android:versionCode="20160503"
     android:versionName="@string/app_version">
     
     <uses-sdk
@@ -40,7 +40,7 @@
             </intent-filter>
         </activity> 
         
-        <activity android:name=".SensorActivity"
+        <activity android:name=".ModulesActivity"
             android:screenOrientation="landscape" />
         <activity android:name=".SensorHost"
             android:screenOrientation="landscape" />

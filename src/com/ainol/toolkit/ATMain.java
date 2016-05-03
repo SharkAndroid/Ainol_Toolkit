@@ -33,58 +33,59 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.ainol.toolkit.R;
-import com.ainol.toolkit.SensorActivity;
 import com.stericson.RootShell.execution.Command;
 import com.stericson.RootTools.*;
 
 public class ATMain extends Activity {
-    int ttime = 6000; // 6 seconds
-    final Date date = new Date();
-    final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    final String TAG = "ATMain";
-    final String SETTINGS_KEY = "settings";
-    final String AT_DIR = "AT_Dir";
-    final String BACKUP_DIR = "backups";
-    final String ATRIMG_Name = "ATRIMG_" + sdf.format(date);
-    final String REC_IMG = "rec.img";
-    final String cpu_freq_file = "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq";
-    final String gpu_freq_file = "/sys/devices/system/cpu/cpufreq/gpufreq/gpu3dfreq";
-    // We use only /dev/block/actj(sdcard) read_ahead_kb
-    final String memory_speed_file = "/sys/devices/virtual/bdi/93:72/read_ahead_kb";
-    final String ram_file = "/proc/meminfo";
-    private CurCPUThread cpu_thread = new CurCPUThread();
-    private CurGPUThread gpu_thread = new CurGPUThread();
-    private CurMSThread ms_thread = new CurMSThread();
-    ToggleButton cpuboost;
-    ToggleButton gpuboost;
-    ToggleButton freezes;
-    ToggleButton colorfix;
-    TextView cpu_freq_value;
-    TextView gpu_freq_value;
-    TextView ms_value;
-    boolean cpuboost_state;
-    boolean gpuboost_state;
-    boolean freezes_state;
-    boolean colorfix_state;
-    boolean wd_state;
+    /* Utils */
+    public static int ttime = 6000; // 6 seconds
+    public static Date mDate = new Date();
+    public static SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private AlertDialog.Builder mAlerDialogBuilder;
 
-    AlertDialog.Builder adb;
+    /* Main variables */
+    private String TAG = "ATMain";
+    private String SETTINGS_KEY = "settings";
+    public static String AT_DIR = "AT_Dir";
+    public static String BACKUP_DIR = "backups";
+    private String ATRIMG_Name = "ATRIMG_" + mSimpleDateFormat.format(mDate);
+    private String REC_IMG = "rec.img";
+    private String cpu_freq_file = "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq";
+    private String gpu_freq_file = "/sys/devices/system/cpu/cpufreq/gpufreq/gpu3dfreq";
+    // We use only /dev/block/actj(sdcard) read_ahead_kb
+    private String memory_speed_file = "/sys/devices/virtual/bdi/93:72/read_ahead_kb";
+    private String ram_file = "/proc/meminfo";
+    private CurCPUThread mCurCPUThread = new CurCPUThread();
+    private CurGPUThread mCurGPUThread = new CurGPUThread();
+    private CurMSThread mCurMSThread = new CurMSThread();
+    private ToggleButton mCPUBoost;
+    private ToggleButton mGPUBoost;
+    private ToggleButton mFreezes;
+    private ToggleButton mColorfix;
+    private TextView mCPU_Freq_Value;
+    private TextView mGPU_Freq_Value;
+    private TextView mMS_Value;
+    private boolean mCPUBoost_State;
+    private boolean mGPUBoost_State;
+    private boolean mFreezes_State;
+    private boolean mColorfix_State;
+    private boolean mWD_State;
 
     private Handler cpu_hand = new Handler() {
         public void handleMessage(Message msg) {
-            cpu_freq_value.setText(toMHzCPU((String) msg.obj));
+            mCPU_Freq_Value.setText(toMHzCPU((String) msg.obj));
         }
     };
 
     private Handler gpu_hand = new Handler() {
         public void handleMessage(Message msg) {
-            gpu_freq_value.setText(toMHzGPU((String) msg.obj));
+            mGPU_Freq_Value.setText(toMHzGPU((String) msg.obj));
         }
     };
 
     private Handler ms_hand = new Handler() {
         public void handleMessage(Message msg) {
-            ms_value.setText(toKbs((String) msg.obj));
+            mMS_Value.setText(toKbs((String) msg.obj));
         }
     };
 
@@ -100,7 +101,7 @@ public class ATMain extends Activity {
             try {
                 while (!interrupt) {
                     sleep(500);
-                    final String Freq = fileReadOneLine(cpu_freq_file);
+                    String Freq = fileReadOneLine(cpu_freq_file);
                     if (Freq != null) cpu_hand.sendMessage(cpu_hand.obtainMessage(0, Freq));
                 }
             } catch (InterruptedException e) {
@@ -120,7 +121,7 @@ public class ATMain extends Activity {
             try {
                 while (!interrupt) {
                     sleep(500);
-                    final String Freq = fileReadOneLine(gpu_freq_file);
+                    String Freq = fileReadOneLine(gpu_freq_file);
                     if (Freq != null) gpu_hand.sendMessage(gpu_hand.obtainMessage(0, Freq));
                 }
             } catch (InterruptedException e) {
@@ -140,7 +141,7 @@ public class ATMain extends Activity {
             try {
                 while (!interrupt) {
                     sleep(500);
-                    final String Speed = fileReadOneLine(memory_speed_file);
+                    String Speed = fileReadOneLine(memory_speed_file);
                     if (Speed != null) ms_hand.sendMessage(ms_hand.obtainMessage(0, Speed));
                 }
             } catch (InterruptedException e) {
@@ -196,13 +197,13 @@ public class ATMain extends Activity {
         }
 
         /* Initialize layout */
-        cpuboost = (ToggleButton) findViewById(R.id.cpuboost_btn);
-        gpuboost = (ToggleButton) findViewById(R.id.gpuboost_btn);
-        freezes = (ToggleButton) findViewById(R.id.freezes_btn);
-        colorfix = (ToggleButton) findViewById(R.id.colorfix_btn);
-        cpu_freq_value = (TextView) findViewById(R.id.cpu_freq_value);
-        gpu_freq_value = (TextView) findViewById(R.id.gpu_freq_value);
-        ms_value = (TextView) findViewById(R.id.ms_value);
+        mCPUBoost = (ToggleButton) findViewById(R.id.cpuboost_btn);
+        mGPUBoost = (ToggleButton) findViewById(R.id.gpuboost_btn);
+        mFreezes = (ToggleButton) findViewById(R.id.freezes_btn);
+        mColorfix = (ToggleButton) findViewById(R.id.colorfix_btn);
+        mCPU_Freq_Value = (TextView) findViewById(R.id.cpu_freq_value);
+        mGPU_Freq_Value = (TextView) findViewById(R.id.gpu_freq_value);
+        mMS_Value = (TextView) findViewById(R.id.ms_value);
 
         String[] c_freq = new String[0];
         String cpu_freq_line;
@@ -249,10 +250,10 @@ public class ATMain extends Activity {
 
         // Change current cpu freq text if we dont have a list file
         if (!fileExists(cpu_freq_file) || (cpu_freq_line = fileReadOneLine(cpu_freq_file)) == null) {
-            cpu_freq_value.setText(getString(R.string.cpu_freq_value));
+            mCPU_Freq_Value.setText(getString(R.string.cpu_freq_value));
         } else {
-            cpu_freq_value.setText(toMHzCPU(cpu_freq_line));
-            cpu_thread.start();
+            mCPU_Freq_Value.setText(toMHzCPU(cpu_freq_line));
+            mCurCPUThread.start();
             c_freq = cpu_freq_line.split(" ");
             cpu_frequencies = new String[c_freq.length];
             for (int i = 0; i < cpu_frequencies.length; i++) {
@@ -262,10 +263,10 @@ public class ATMain extends Activity {
 
         // Change current gpu freq text if we dont have a list file
         if (!fileExists(gpu_freq_file) || (gpu_freq_line = fileReadOneLine(gpu_freq_file)) == null) {
-            gpu_freq_value.setText(getString(R.string.gpu_freq_value));
+            mGPU_Freq_Value.setText(getString(R.string.gpu_freq_value));
         } else {
-            gpu_freq_value.setText(toMHzGPU(gpu_freq_line));
-            gpu_thread.start();
+            mGPU_Freq_Value.setText(toMHzGPU(gpu_freq_line));
+            mCurGPUThread.start();
             g_freq = gpu_freq_line.split(" ");
             gpu_frequencies = new String[g_freq.length];
             for (int i = 0; i < gpu_frequencies.length; i++) {
@@ -275,10 +276,10 @@ public class ATMain extends Activity {
 
         // Change current memory speed text if we dont have a list file
         if (!fileExists(memory_speed_file) || (ms_line = fileReadOneLine(memory_speed_file)) == null) {
-            ms_value.setText(getString(R.string.ms_value));
+            mMS_Value.setText(getString(R.string.ms_value));
         } else {
-            ms_value.setText(toKbs(ms_line));
-            ms_thread.start();
+            mMS_Value.setText(toKbs(ms_line));
+            mCurMSThread.start();
             m_s = ms_line.split(" ");
             memory_speed = new String[m_s.length];
             for (int i = 0; i < memory_speed.length; i++) {
@@ -288,23 +289,23 @@ public class ATMain extends Activity {
 
         // Save variables
         final SharedPreferences sharedPrefs = getSharedPreferences(SETTINGS_KEY, MODE_PRIVATE);
-        cpuboost.setChecked(sharedPrefs.getBoolean("cpuboost_state", false));
-        gpuboost.setChecked(sharedPrefs.getBoolean("gpuboost_state", false));
-        freezes.setChecked(sharedPrefs.getBoolean("freezes_state", false));
-        colorfix.setChecked(sharedPrefs.getBoolean("colorfix_state", false));
-        wd_state = sharedPrefs.getBoolean("wd_state", false);
+        mCPUBoost.setChecked(sharedPrefs.getBoolean("cpuboost_state", false));
+        mGPUBoost.setChecked(sharedPrefs.getBoolean("gpuboost_state", false));
+        mFreezes.setChecked(sharedPrefs.getBoolean("freezes_state", false));
+        mColorfix.setChecked(sharedPrefs.getBoolean("colorfix_state", false));
+        mWD_State = sharedPrefs.getBoolean("wd_state", false);
 
         // Warning dialog for freezes and colorfix functions
-        if (!wd_state) {
+        if (!mWD_State) {
             String wdtitle = getString(R.string.wd_title);
             String wdtext = getString(R.string.wd_text);
             String ok = getString(R.string.ok);
     
-            adb = new AlertDialog.Builder(ATMain.this);
-            adb.setTitle(wdtitle);
-            adb.setMessage(wdtext);
-            adb.setCancelable(false);
-            adb.setNeutralButton(ok, new DialogInterface.OnClickListener() {
+            mAlerDialogBuilder = new AlertDialog.Builder(ATMain.this);
+            mAlerDialogBuilder.setTitle(wdtitle);
+            mAlerDialogBuilder.setMessage(wdtext);
+            mAlerDialogBuilder.setCancelable(false);
+            mAlerDialogBuilder.setNeutralButton(ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     SharedPreferences.Editor editor = sharedPrefs.edit();
                     editor.putBoolean("wd_state", true);
@@ -313,92 +314,92 @@ public class ATMain extends Activity {
                 }
             });
 
-            AlertDialog ad = adb.create();
+            AlertDialog ad = mAlerDialogBuilder.create();
             ad.show();
         }
 
         // CPU boost function
-        cpuboost.setOnClickListener(new View.OnClickListener() {
+        mCPUBoost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (cpuboost.isChecked()) {
+                if (mCPUBoost.isChecked()) {
                     function("cpuon");
                     Toast.makeText(ATMain.this, getString(R.string.cpuboost_unlocked), ttime).show();
                     Log.d(TAG, "Warning: Maximum CPU freq unlocked!");
-                    cpuboost_state = true;
+                    mCPUBoost_State = true;
                 } else {
                     function("cpuoff");
                     Toast.makeText(ATMain.this, getString(R.string.cpuboost_locked), ttime).show();
                     Log.d(TAG, "Warning: Maximum CPU freq locked!");
-                    cpuboost_state = false;
+                    mCPUBoost_State = false;
                 }
                 SharedPreferences.Editor editor = sharedPrefs.edit();
-                editor.putBoolean("cpuboost_state", cpuboost_state);
+                editor.putBoolean("cpuboost_state", mCPUBoost_State);
                 editor.commit();
             }
         });
 
         // GPU boost function
-        gpuboost.setOnClickListener(new View.OnClickListener() {
+        mGPUBoost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (gpuboost.isChecked()) {
+                if (mGPUBoost.isChecked()) {
                     function("gpuon");
                     Toast.makeText(ATMain.this, getString(R.string.gpuboost_unlocked), ttime).show();
                     Log.d(TAG, "Warning: Maximum GPU freq unlocked!");
-                    gpuboost_state = true;
+                    mGPUBoost_State = true;
                 } else {
                     function("gpuoff");
                     Toast.makeText(ATMain.this, getString(R.string.gpuboost_locked), ttime).show();
                     Log.d(TAG, "Warning: Maximum GPU freq locked!");
-                    gpuboost_state = false;
+                    mGPUBoost_State = false;
                 }
                 SharedPreferences.Editor editor = sharedPrefs.edit();
-                editor.putBoolean("gpuboost_state", gpuboost_state);
+                editor.putBoolean("gpuboost_state", mGPUBoost_State);
                 editor.commit();
             }
         }); 
 
         // Freezes function
-        freezes.setOnClickListener(new View.OnClickListener() {
+        mFreezes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (freezes.isChecked()) {
+                if (mFreezes.isChecked()) {
                     function("freezeson");
                     FreezeFuncDialog();
                     Toast.makeText(ATMain.this, getString(R.string.function_enabled), ttime).show();
                     Log.d(TAG, "Warning: Freeze function enabled!");
-                    freezes_state = true;
+                    mFreezes_State = true;
                 } else {
                     function("freezesoff");
                     FreezeFuncDialog();
                     Toast.makeText(ATMain.this, getString(R.string.function_disabled), ttime).show();
                     Log.d(TAG, "Warning: Freeze function disabled!");
-                    freezes_state = false;
+                    mFreezes_State = false;
                 }
                 SharedPreferences.Editor editor = sharedPrefs.edit();
-                editor.putBoolean("freezes_state", freezes_state);
+                editor.putBoolean("freezes_state", mFreezes_State);
                 editor.commit();
             }
         });
 
         // Colorfix function
-        colorfix.setOnClickListener(new View.OnClickListener() {
+        mColorfix.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (colorfix.isChecked()) {
+                if (mColorfix.isChecked()) {
                     function("colorfixon");
                     Toast.makeText(ATMain.this, getString(R.string.function_enabled), ttime).show();
                     Log.d(TAG, "Warning: Colorfix function enabled!");
-                    colorfix_state = true;
+                    mColorfix_State = true;
                 } else {
                     function("colorfixoff");
                     Toast.makeText(ATMain.this, getString(R.string.function_disabled), ttime).show();
                     Log.d(TAG, "Warning: Colorfix function disabled!");
-                    colorfix_state = false;
+                    mColorfix_State = false;
                 }
                 SharedPreferences.Editor editor = sharedPrefs.edit();
-                editor.putBoolean("colorfix_state", colorfix_state);
+                editor.putBoolean("colorfix_state", mColorfix_State);
                 editor.commit();
             }
         });
@@ -466,13 +467,13 @@ public class ATMain extends Activity {
             }
         });
 
-        // Sensor activity
-        final Button sensor_button = (Button) findViewById(R.id.sensor_button);
-        sensor_button.setOnClickListener(new View.OnClickListener() {
+        // Modules activity
+        final Button modules_button = (Button) findViewById(R.id.modules_button);
+        modules_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent sb = new Intent(ATMain.this, SensorActivity.class);
-                startActivity(sb);
+                Intent mb = new Intent(ATMain.this, ModulesActivity.class);
+                startActivity(mb);
             }
         });
 
@@ -493,21 +494,21 @@ public class ATMain extends Activity {
         moveTaskToBack(true);
         System.runFinalizersOnExit(true);
 
-        cpu_thread.interrupt();
+        mCurCPUThread.interrupt();
         try {
-            cpu_thread.join();
+            mCurCPUThread.join();
         } catch (InterruptedException e) {
         }
 
-        gpu_thread.interrupt();
+        mCurGPUThread.interrupt();
         try {
-            gpu_thread.join();
+            mCurGPUThread.join();
         } catch (InterruptedException e) {
         }
 
-        ms_thread.interrupt();
+        mCurMSThread.interrupt();
         try {
-            ms_thread.join();
+            mCurMSThread.join();
         } catch (InterruptedException e) {
         }
 
@@ -662,6 +663,10 @@ public class ATMain extends Activity {
             } else if (pdevice.trim().equals("captain")) {
                 fixfile = "freezes_fix_captain.zip";
                 fixinst = true;
+            } else if (!pdevice.trim().equals("hero2v2") || !pdevice.trim().equals("hero2v1") || 
+                    !pdevice.trim().equals("venus") || !pdevice.trim().equals("captain")) {
+                Toast.makeText(ATMain.this, getString(R.string.need_device), ttime).show();
+                fixinst = false;
             } else {
                 Toast.makeText(ATMain.this, getString(R.string.need_fw), ttime).show();
                 fixinst = false;
@@ -696,6 +701,10 @@ public class ATMain extends Activity {
             } else if (pdevice.trim().equals("captain")) {
                 unfixfile = "freezes_unfix_captain.zip";
                 unfixinst = true;
+            } else if (!pdevice.trim().equals("hero2v2") || !pdevice.trim().equals("hero2v1") || 
+                    !pdevice.trim().equals("venus") || !pdevice.trim().equals("captain")) {
+                Toast.makeText(ATMain.this, getString(R.string.need_device), ttime).show();
+                unfixinst = false;
             } else {
                 Toast.makeText(ATMain.this, getString(R.string.need_fw), ttime).show();
                 unfixinst = false;
